@@ -1,0 +1,1936 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<<<<<<< HEAD
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
+  <meta content="text/html; charset=us-ascii" http-equiv="Content-Type" />
+
+  <title>HTTPsec Authentication Protocol</title>
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="context/screen.css" />
+  <link href="/css/documentation.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- ###_HEADER_START_### -->
+
+  <div class="secarta_bar">
+    a <a href="http://secarta.com/"><b>Secarta</b></a> project ...
+  </div><!-- ###_HEADER_END_### -->
+=======
+  <meta content="text/html; charset=us-ascii" http-equiv="Content-Type" />
+
+  <title>HTTPsec Authentication Protocol</title>
+</head>
+
+<body>
+>>>>>>> Changed links so the file can stand alone.
+
+  <div class="padded">
+    <h1 id="title">HTTPsec Authentication Protocol</h1>
+
+<<<<<<< HEAD
+    <p class="noprint small">[ <a href="/1.0/section/">View as multiple pages</a> ]</p>
+
+=======
+>>>>>>> Changed links so the file can stand alone.
+    <div title="Preamble" id="preamble">
+      <div id="abstract">
+        <h2>Abstract</h2>
+
+        <p>A public key authentication scheme for HTTP transactions, specifying a minimal HTTP extension for mutual
+        authentication, message origin authentication, message sequence integrity, content integrity, and content
+        ciphering.</p>
+      </div>
+
+      <div id="status">
+        <h2>Status</h2>
+
+        <p>This document is a draft specification which may undergo minor changes, both normative and presentational.</p>
+      </div>
+
+      <dl>
+        <dt>Document Date:</dt>
+
+        <dd>2006-09-29</dd>
+
+        <dt>Editor</dt>
+
+        <dd>Stephan Fowler: stephan.fowler<!-- -->@<!-- -->secarta.com</dd>
+
+        <dt>Copyright</dt>
+
+        <dd>Copyright 2005 <a href="http://secarta.com/">Secarta</a>, all rights reserved. <a href="http://secarta.com/about/notices.html">Copyright
+        and IPR notices</a>.</dd>
+      </dl>
+    </div>
+    <hr />
+
+    <h2>Table of Contents</h2>
+
+    <div id="toc">
+      <div class="toc-indent">
+        <a href="#Introduction">1. Introduction</a>
+
+        <div class="toc-indent">
+          <a href="#Editorial_Conventions">1.1. Editorial Conventions</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Terms">1.2. Terms</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Identifiers">1.3. Identifiers</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Summary">2. Summary</a>
+
+        <div class="toc-indent">
+          <a href="#Authentication_Model">2.1. Authentication Model</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Peer_Identifiers">2.2. Peer Identifiers</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Protocol_Operation">2.3. Protocol Operation</a>
+
+          <div class="toc-indent">
+            <a href="#Initialization">2.3.1. Initialization</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Continuation">2.3.2. Continuation</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Protocol_Messages">3. Protocol Messages</a>
+
+        <div class="toc-indent">
+          <a href="#Initialization_Messages">3.1. Initialization Messages</a>
+
+          <div class="toc-indent">
+            <a href="#Initialization_Request">3.1.1. Initialization Request</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Initialization_Response">3.1.2. Initialization Response</a>
+          </div>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Continuation_Messages">3.2. Continuation Messages</a>
+
+          <div class="toc-indent">
+            <a href="#Continuation_Request">3.2.1. Continuation Request</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Continuation_Response">3.2.2. Continuation Response</a>
+          </div>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Challenge_Messages">3.3. Challenge Messages</a>
+
+          <div class="toc-indent">
+            <a href="#Challenge_Response">3.3.1. Challenge Response</a>
+          </div>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Message_Flow">3.4. Message Flow</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Protocol_Directives">4. Protocol Directives</a>
+
+        <div class="toc-indent">
+          <a href="#id">4.1. id</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#dh">4.2. dh</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#certificate">4.3. certificate</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#url">4.4. url</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#group">4.5. group</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#nonce">4.6. nonce</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#auth">4.7. auth</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#token">4.8. token</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#signature">4.9. signature</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#count">4.10. count</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#mac">4.11. mac</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#digest">4.12. digest</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Other_Headers">5. Other Headers</a>
+
+        <div class="toc-indent">
+          <a href="#Content-Encoding">5.1. Content-Encoding</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Cache-Control">5.2. Cache-Control</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Expires">5.3. Expires</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Protocol_Computations">6. Protocol Computations</a>
+
+        <div class="toc-indent">
+          <a href="#Algorithms">6.1. Algorithms</a>
+
+          <div class="toc-indent">
+            <a href="#Hash_Algorithm">6.1.1. Hash Algorithm</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Public_Key_Algorithm">6.1.2. Public Key Algorithm</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Encryption_Scheme">6.1.3. Encryption Scheme</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Signature_Scheme">6.1.4. Signature Scheme</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Block_Cipher">6.1.5. Block Cipher</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Block_Cipher_Mode">6.1.6. Block Cipher Mode</a>
+          </div>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Header_Canonicalization">6.2. Header Canonicalization</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Initialization_Transcript">6.3. Initialization Transcript</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Continuation_Request_Transcript">6.4. Continuation Request Transcript</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Continuation_Response_Transcript">6.5. Continuation Response Transcript</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Shared_Secret">6.6. Shared Secret</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Keys">6.7. Keys</a>
+
+          <div class="toc-indent">
+            <a href="#MAC_Keys">6.7.1. MAC Keys</a>
+          </div>
+
+          <div class="toc-indent">
+            <a href="#Cipher_Keys">6.7.2. Cipher Keys</a>
+          </div>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Message_Body_Ciphering">6.8. Message Body Ciphering</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Message_Validation">7. Message Validation</a>
+
+        <div class="toc-indent">
+          <a href="#Initialization_Request_Validation">7.1. Initialization Request Validation</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Initialization_Response_Validation">7.2. Initialization Response Validation</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Continuation_Request_Validation">7.3. Continuation Request Validation</a>
+        </div>
+
+        <div class="toc-indent">
+          <a href="#Continuation_Response_Validation">7.4. Continuation Response Validation</a>
+        </div>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Cache_Considerations">8. Cache Considerations</a>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Security_Considerations">9. Security Considerations</a>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#References">10. References</a>
+      </div>
+
+      <div class="toc-indent">
+        <a href="#Editor_Address">11. Editor Address</a>
+      </div>
+    </div>
+    <hr />
+
+    <div class="section" title="Introduction">
+      <h2>1. <a name="Introduction" id="Introduction">Introduction</a></h2>
+
+      <p>This specification describes a public key authentication scheme for HTTP transactions. It provides a minimal HTTP
+      extension for mutual authentication and message origin authentication. It offers integrity protection of a defined set of
+      HTTP message headers, message sequence integrity, content integrity, and content ciphering.</p>
+
+      <p>This scheme is designed to fit into the generic authentication framework of <a href=
+      "http://www.ietf.org/rfc/rfc2616.txt" shape="rect">RFC2616</a> [<a href="#ref-HTTP" shape="rect">HTTP</a>], as exploited
+      in <a href="http://www.ietf.org/rfc/rfc2617.txt" shape="rect">RFC2617</a> [<a href="#ref-HTTP-Authentication" shape=
+      "rect">HTTP-Authentication</a>].</p>
+
+      <div class="section" title="Editorial_Conventions">
+        <h3>1.1. <a name="Editorial_Conventions" id="Editorial_Conventions">Editorial Conventions</a></h3>
+
+        <p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY",
+        and "OPTIONAL" in this specification are to be interpreted as described in <a href=
+        "http://www.ietf.org/rfc/rfc2119.txt" shape="rect">RFC2119</a> [<a href="#ref-KEYWORDS" shape="rect">KEYWORDS</a>]</p>
+      </div>
+
+      <div class="section" title="Terms">
+        <h3>1.2. <a name="Terms" id="Terms">Terms</a></h3>
+
+        <p>"Peer" refers generically to either of the two principals acting as requester and responder in an HTTP message
+        exchange. Formally, a peer is a logical entity that can invoke its associated private key for the purpose of that
+        exchange. Note that user-agents and/or servers may act as (or for) a multitude of logically distinct peers, and are
+        thus not themselves considered necessarily equivalent to those peers.</p>
+
+        <p>"Message" refers generically to an <a href="#ref-HTTP" shape="rect">HTTP</a> message, be it a request or a
+        response.</p>
+
+        <p>"requester" refers to the peer sending a request message and receiving a response message.</p>
+
+        <p>"responder" refers to the peer receiving a request message and sending a response message.</p>
+
+        <p>"Encryption" is used in relation to asymmetric key operations, whereas the term "cipher" is used in relation to
+        symmetric key operations.</p>
+      </div>
+
+      <div class="section" title="Identifiers">
+        <h3>1.3. <a name="Identifiers" id="Identifiers">Identifiers</a></h3>
+
+        <p>The identifier for this scheme is "<code>httpsec/1.0</code>". This literal features in protocol headers and in
+        various protocol computations.</p>
+
+        <p>The identifier for the <a href="#Content-Encoding" shape="rect">Content-Encoding</a> defined for message-body
+        ciphering is "<code>x-httpsec/1.0-cipher</code>".</p>
+      </div>
+    </div>
+
+    <div class="section" title="Summary">
+      <h2>2. <a name="Summary" id="Summary">Summary</a></h2>
+
+      <p>This specification describes a concrete syntax for a public key authentication scheme for HTTP transactions. It
+      provides a minimal HTTP extension for mutual authentication and message origin authentication, via the integrity
+      protection of a defined set of HTTP message headers. It offers message sequence integrity, forward secrecy, and
+      optionally content integrity and content ciphering.</p>
+
+      <p>It is intended for application in situations where credential-based schemes are inappropriate for architectural
+      reasons or are considered too weak, and also where message-layer and/or application-layer security requirements are not
+      fulfilled by transport-layer or network-layer security protocols. It is not intended as a substitute for lower- or
+      higher-layer security protocols, and indeed may be found to usefully coexist with these.</p>
+
+      <div class="section" title="Authentication_Model">
+        <h3>2.1. <a name="Authentication_Model" id="Authentication_Model">Authentication Model</a></h3>
+
+        <p>This scheme uses public keys for the mutual authentication of peers. More precisely, it allows one peer to
+        authenticate a message that purports to originate from another peer.</p>
+
+        <p>As with all public key authentication schemes, acceptance of the authenticity of a peer is equivalent to
+        establishing that the peer possesses the private key paired with a certain public key. The authentication model is thus
+        predicated on the assumption that the authenticator can correctly associate a public key with the peer it is
+        authenticating. Accordingly, a candidate purporting to be such a peer is considered authentic if it can demonstrate its
+        ability to invoke the associated private key. This document does not address the process by which a public key is
+        associated (correctly or not) with a peer. The protocol is intended to be able to integrate with any number of such
+        mechanisms, from "leap of faith" type schemes such as employed by SSH, to trust-based schemes such as PKI style
+        certification.</p>
+      </div>
+
+      <div class="section" title="Peer_Identifiers">
+        <h3>2.2. <a name="Peer_Identifiers" id="Peer_Identifiers">Peer Identifiers</a></h3>
+
+        <p>A peer has an associated identifier. This acts as a logical reference to the peer's public key. These peer
+        identifiers are literals that are purposefully opaque in this specification. The combination of an identifier and the
+        public key associated with it is the "authenticated peer" from the perspective of an other peer that authenticates
+        it.</p>
+
+        <p>In some use-cases, the public key of one peer is considered to be known (or retrievable in a trusted manner) by a
+        second peer that requires it in order to authenticate the first peer. The first peer's identifier is thus a reference
+        that the second peer may use to retrieve the appropriate public key, for instance from a trusted local store. In other
+        use-cases, for example those that require a bootstrapping capability, public keys are exchanged within the protocol
+        itself.</p>
+      </div>
+
+      <div class="section" title="Protocol_Operation">
+        <h3>2.3. <a name="Protocol_Operation" id="Protocol_Operation">Protocol Operation</a></h3>
+
+        <p>This protocol enables, and depends on, the establishment of a shared-secret arrangement between the requester and
+        the responder. The protocol has two distinct stages; "initialization" and "continuation". Initialization establishes a
+        shared-secret between the requester and responder via a request/response transaction between the two. It is within this
+        initialization transaction that the public keys of the peers are employed for mutual authentication.</p>
+
+        <p>Subsequent continuation transactions carry conventional message payloads. They reference the shared secret
+        established by the initialization stage, and depend on both peers' knowledge of it for their security features. No
+        temporal constraint is placed on the validity of the shared-secret arrangement, which may be chosen independently by
+        either peer to be anything from very short lived to essentially permanent. (The initialization stage could in fact be
+        effected by another process entirely outside of this specification.)</p>
+
+        <p>The responder is first authenticated in the initialization stage by the use of digital signatures. The requester is
+        authenticated in each continuation transaction by the use of message authentication codes. This asymmetry allows the
+        requester to authenticate the responder before sending it any data, while keeping all public-key and other key-exchange
+        operations within the single initialization transaction. This mitigates the state-management requirements and ensures
+        that computationally expensive operations are avoided in subsequent continuation messages, of which there may be an
+        arbitrary number.</p>
+
+        <div class="section" title="Initialization">
+          <h4>2.3.1. <a name="Initialization" id="Initialization">Initialization</a></h4>
+
+          <p>The requester begins the initialization stage by sending a request containing its initialize parameters. The
+          responder returns with a response containing its initialize parameters. Both these messages contain the peer's
+          identifier, ephemeral Diffie-Hellman key, and optionally their authentication public key. See <a href=
+          "#Initialization_Request" shape="rect">Initialization Request</a> and <a href="#Initialization_Response" shape=
+          "rect">Initialization Response</a> for the form these messages take.</p>
+
+          <p>This initialization transaction establishes an authenticated shared-secret arrangement between both peers, indexed
+          by a token chosen by the responder. Forward secrecy is ensured by the ephemeral Diffie-Hellman shared-secret
+          exchange. Both peers identically derive temporary message authentication keys and cipher keys from the shared-secret,
+          to be employed in the protection of subsequent continuation messages.</p>
+
+          <p>Whereas the protocol mandates certain conditions under which these temporary keys must be discarded, either peer
+          may choose to discard them according to rules of their own, for instance based on elapsed time since last usage.</p>
+        </div>
+
+        <div class="section" title="Continuation">
+          <h4>2.3.2. <a name="Continuation" id="Continuation">Continuation</a></h4>
+
+          <p>Continuation requests carry a token to reference a previously initialized shared-secret arrangement. All
+          continuation messages carry <a href="#mac" shape="rect">message authentication codes</a> to determine message origin
+          authenticity, partial sequence integrity, and optionally entity-body integrity. Continuation messages may employ
+          optional <a href="#Message_Body_Ciphering" shape="rect">message body ciphering</a> at the discretion of the sending
+          peer. In all other respects, continuation messages are conventional HTTP messages. See <a href=
+          "#Continuation_Request" shape="rect">Continuation Request</a> and <a href="#Continuation_Response" shape=
+          "rect">Continuation Response</a> for the form these messages take.</p>
+
+          <p>The responder may at any stage prompt initialization (or re-initialization) by returning a challenge response. See
+          <a href="#Challenge_Response" shape="rect">Challenge Response</a> for the form this message takes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" title="Protocol_Messages">
+      <h2>3. <a name="Protocol_Messages" id="Protocol_Messages">Protocol Messages</a></h2>
+
+      <p>All protocol parameters are carried in existing HTTP message headers. The <code>Authorization</code> request header
+      [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.8"
+      shape="rect">Section 14.8</a>] carries the requester's protocol parameters. The <code>WWW-Authenticate</code> response
+      header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+      "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.47" shape="rect">Section 14.47</a>] carries the responder's
+      responder's parameters. These are the headers implied wherever reference is made in this document to the passing of
+      protocol parameters by the respective peers.</p>
+
+      <p>The HTTP header definitions in this specification use the augmented Backus-Naur form of [<a href="#ref-HTTP" shape=
+      "rect">HTTP</a>] [<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec2.html#sec2.1" shape="rect">Section 2.1</a>],
+      and use these common terminators:</p>
+      <pre class="normative" xml:space="preserve">
+base64          = *(4base64-char) [base64-terminal]
+base64-char     = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" |
+                  "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" |
+                  "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" |
+                  "Y" | "Z" |
+                  "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" |
+                  "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" |
+                  "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" |
+                  "y" | "z" |
+                  "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" |
+                  "8" | "9" | "+" | "/"
+base64-terminal = (2base64-char "==") | (3base64-char "=")
+
+decimal         = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+        
+</pre>
+
+      <p>Definitions of individual header directives are given in the <a href="#Protocol_Directives" shape="rect">Protocol
+      Directives</a> section.</p>
+
+      <div class="section" title="Initialization_Messages">
+        <h3>3.1. <a name="Initialization_Messages" id="Initialization_Messages">Initialization Messages</a></h3>
+
+        <p>Messages containing an <code>initialize</code> directive assert that the sending peer is providing initialization
+        parameters. Successful initialization requires an <a href="#Initialization_Request" shape="rect">initialization
+        request</a> and an associated <a href="#Initialization_Response" shape="rect">initialization response</a>.</p>
+
+        <div class="section" title="Initialization_Request">
+          <h4>3.1.1. <a name="Initialization_Request" id="Initialization_Request">Initialization Request</a></h4>
+
+          <p>The <code>Authorization</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.8" shape="rect">14.8</a>] in protocol initialization
+          requests has the following form:</p>
+          <pre class="normative" xml:space="preserve">
+"Authorization: httpsec/1.0 initialize, "
+ 1#(  <a href="#id" shape="rect">id</a>
+   |  <a href="#dh" shape="rect">dh</a>
+   | [<a href="#certificate" shape="rect">certificate</a>] 
+   |  <a href="#url" shape="rect">url</a>
+   |  <a href="#group" shape="rect">group</a>
+   |  <a href="#nonce" shape="rect">nonce</a> )
+   
+id          = "id=" &lt;URI&gt;
+dh          = "dh=" base64
+certificate = "certificate=" &lt;URI&gt;
+url         = "url=" &lt;URI&gt;
+group       = "group=" &lt;string-no-whitespace&gt;
+nonce       = "nonce=" base64
+</pre>
+
+          <p>Example message:</p>
+          <pre class="example" xml:space="preserve">
+HEAD http://alice.example.com/foobar.txt HTTP/1.1
+Authorization: httpsec/1.0 initialize
+    id=bob.example.com
+    dh=clW9y2X5Vy+5+Ncv5lAI3W9y2X5Vgfe4y+5+Ncv5l...
+    certificate=http://bob.example.com/my-cert
+    url=http://alice.example.com/foobar.txt
+    group=rfc3526#14
+    nonce=7iqgkzgfdIe0HN35r6met2579yxetyerty7MZW...
+</pre>
+
+          <p>(For legibility, the example's protocol header is extended over multiple lines, as per [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>].
+          Additionally, the values of some directives are lengthy and have therefore been abbreviated; their terminating
+          ellipsis "..." would NOT appear in the actual value.)</p>
+
+          <p>An initialization request has a HEAD method [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4" shape="rect">Section 9.4</a>], unless it carries a
+          certificate payload in the message entity-body (see <a href="#certificate" shape="rect">certificate</a> section) in
+          which case it has a POST method [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5" shape="rect">Section 9.5</a>].</p>
+
+          <p>Its Request-URI [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.2" shape="rect">Section 5.1.2</a>] is typically be that
+          of a protected resource hosted by the responder and ultimately desired by the requester, but this is not
+          normative.</p>
+        </div>
+
+        <div class="section" title="Initialization_Response">
+          <h4>3.1.2. <a name="Initialization_Response" id="Initialization_Response">Initialization Response</a></h4>
+
+          <p>The <code>WWW-Authenticate</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.47" shape="rect">14.47</a>] in protocol initialization
+          responses has the following form:</p>
+          <pre class="normative" xml:space="preserve">
+"WWW-Authenticate: httpsec/1.0 initialize, "
+ 1#(  <a href="#id" shape="rect">id</a>
+   |  <a href="#dh" shape="rect">dh</a>
+   | [<a href="#certificate" shape="rect">certificate</a>]
+   |  <a href="#token" shape="rect">token</a>
+   |  <a href="#auth" shape="rect">auth</a>
+   |  <a href="#signature" shape="rect">signature</a> )
+     
+token       = "token=" &lt;string-no-whitespace&gt;
+id          = "id=" &lt;URI&gt;
+dh          = "dh=" base64
+certificate = "certificate=" &lt;URI&gt;
+auth        = "auth=" base64
+signature   = "signature=" base64
+</pre>
+
+          <p>Example message:</p>
+          <pre class="example" xml:space="preserve">
+HTTP/1.1 401 Authorization Required
+Expires: Thu, 11 Aug 2005 18:20:42 GMT
+Cache-Control: no-transform
+WWW-Authenticate: httpsec/1.0 initialize
+    id=alice.example.com
+    dh=+NcclW9y2I3W9X5Vy+5v5lAy4X56y+Ncrwrtv5lqe...
+    certificate=http://alice.example.com/my-cert
+    token=mCa5tx1vKBY
+    auth=vpCNmx7MZ7iqgkzIe0HWwfyrOMeqwg0TdbpwefI...
+    signature=2pX3SNgzWkV3w0W9y2X5V23hhy+5b8DQmo...
+</pre>
+
+          <p>(For legibility, the example's protocol header is extended over multiple lines, as per [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>].
+          Additionally, the values of some directives are lengthy and have therefore been abbreviated; their terminating
+          ellipsis "..." would NOT appear in the actual value.)</p>
+        </div>
+      </div>
+
+      <div class="section" title="Continuation_Messages">
+        <h3>3.2. <a name="Continuation_Messages" id="Continuation_Messages">Continuation Messages</a></h3>
+
+        <p>Messages containing a <code>continue</code> directive assert that the message is protected by security features that
+        derive from a previously initialized shared-secret arrangement. A continuation transaction constitutes a <a href=
+        "#Continuation_Request" shape="rect">continuation request</a> and an associated <a href="#Continuation_Response" shape=
+        "rect">continuation response</a>.</p>
+
+        <p>A continuation message MUST pass <a href="#Message_Validation" shape="rect">Message Validation</a> or be immediately
+        discarded by the peer that receives it.</p>
+
+        <div class="section" title="Continuation_Request">
+          <h4>3.2.1. <a name="Continuation_Request" id="Continuation_Request">Continuation Request</a></h4>
+
+          <p>The <code>Authorization</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.8" shape="rect">14.8</a>] in protocol continuation
+          requests has the following form:</p>
+          <pre class="normative" xml:space="preserve">
+"Authorization: httpsec/1.0 continue, " 
+ 1#(  <a href="#token" shape="rect">token</a>
+   |  <a href="#url" shape="rect">url</a>
+   |  <a href="#count" shape="rect">count</a>
+   |  <a href="#mac" shape="rect">mac</a>
+   | [<a href="#digest" shape="rect">digest</a>] )
+                     
+token  = "token=" &lt;string-no-whitespace&gt;
+url    = "url=" &lt;URI&gt;
+count  = "count=" 1*decimal
+mac    = "mac=" base64
+digest = "digest=" base64
+</pre>
+
+          <p>Example message:</p>
+          <pre class="example" xml:space="preserve">
+GET http://alice.example.com/foobar.txt HTTP/1.1
+Authorization: httpsec/1.0 continue
+    token=mCa5tx1vKBY
+    url=http://alice.example.com/foobar.txt
+    count=1
+    mac=zhHPRbxqf3KSMQpjCnpDQmyBnoqiNDMQLjRtMjxUcM=
+</pre>
+
+          <p>(For legibility, the example's protocol header is extended over multiple lines, as per [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>].)</p>
+        </div>
+
+        <div class="section" title="Continuation_Response">
+          <h4>3.2.2. <a name="Continuation_Response" id="Continuation_Response">Continuation Response</a></h4>
+
+          <p>The <code>WWW-Authenticate</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.47" shape="rect">14.47</a>] in protocol continuation
+          responses has the following form:</p>
+          <pre class="normative" xml:space="preserve">
+"WWW-Authenticate: httpsec/1.0 continue, "
+ 1#(  <a href="#count" shape="rect">count</a>
+   |  <a href="#mac" shape="rect">mac</a>
+   | [<a href="#digest" shape="rect">digest</a>] )
+
+count  = "count=" 1*decimal
+mac    = "mac=" base64
+digest = "digest=" base64
+</pre>
+
+          <p>Example message:</p>
+          <pre class="example" xml:space="preserve">
+HTTP/1.1 200 OK
+Date: Thu, 11 Aug 2005 18:20:48 GMT
+Expires: Thu, 11 Aug 2005 18:20:48 GMT
+Content-Type: text/plain;charset=ISO-8859-1
+Content-Length: 1234
+Cache-Control: no-transform
+Content-Encoding: x-httpsec/1.0-cipher
+WWW-Authenticate: httpsec/1.0 continue
+    count=2
+    mac=VplDHX3SNgzWkLKgZkjZ+I5wvImOHAMptVSc/Abttps=
+    digest=V3w0W9y2X5Vy+5+Ncv5lAI3rb8qMlGzrOh9zjHXRHbk= 
+
+<span style="font-style:italic;">&lt;entity-body ciphertext bytes&gt;</span>
+</pre>
+
+          <p>(For legibility, the example's protocol header is extended over multiple lines, as per [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>].)</p>
+        </div>
+      </div>
+
+      <div class="section" title="Challenge_Messages">
+        <h3>3.3. <a name="Challenge_Messages" id="Challenge_Messages">Challenge Messages</a></h3>
+
+        <p>The challenge response is an assertion by the responder that the requested resource is protected by HTTPsec. It is
+        an invitation, made by responder to requester, to make a subsequent <a href="#Initialization_Request" shape=
+        "rect">initialization request</a>.</p>
+
+        <p>In the handling of a <a href="#Challenge_Response" shape="rect">Challenge Response</a>, the requester SHOULD employ
+        a method of limiting the extent of potential deadlock from a repeated series of challenge, for instance limiting them
+        to an arbitrary number such as 3.</p>
+
+        <div class="section" title="Challenge_Response">
+          <h4>3.3.1. <a name="Challenge_Response" id="Challenge_Response">Challenge Response</a></h4>
+
+          <p>The <code>WWW-Authenticate</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.47" shape="rect">14.47</a>] for challenge responses has
+          the following form:</p>
+          <pre class="normative" xml:space="preserve">
+"WWW-Authenticate: httpsec/1.0 challenge, "
+ 1#(  <a href="#id" shape="rect">id</a>
+   | [<a href="#certificate" shape="rect">certificate</a>] )
+
+id          = "id=" &lt;URI&gt;
+certificate = "certificate=" &lt;URI&gt;
+</pre>
+
+          <p>Example message:</p>
+          <pre class="example" xml:space="preserve">
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: httpsec/1.0 challenge
+    id=alice.example.com
+    certificate=http://alice.example.com/my-cert
+</pre>
+
+          <p>(For legibility, the example's protocol header is extended over multiple lines, as per [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>].)</p>
+        </div>
+      </div>
+
+      <div class="section" title="Message_Flow">
+        <h3>3.4. <a name="Message_Flow" id="Message_Flow">Message Flow</a></h3>
+
+        <p>This section details the conditions which regulate how requests and responses are matched, and which HTTP status
+        codes [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10" shape="rect">Section 10</a>] are set by the
+        responder.</p>
+
+        <ul>
+          <li>If a request is for a resource that is protected by HTTPsec, and the request is neither an <a href=
+          "#Initialization_Request" shape="rect">Initialization Request</a> or <a href="#Continuation_Request" shape=
+          "rect">Continuation Request</a>, the response SHOULD be a <a href="#Challenge_Response" shape="rect">Challenge
+          Response</a>, and MUST have a "<code>401 Unauthorized</code>" [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2" shape="rect">10.4.2</a>] status. The requester may
+          subsequently send an <a href="#Initialization_Request" shape="rect">initialization request</a>.</li>
+
+          <li>If a request is a <a href="#Initialization_Request" shape="rect">Initialization Request</a> that passes <a href=
+          "#Initialization_Request_Validation" shape="rect">validation</a>, the response MUST be a well-formed <a href=
+          "#Initialization_Response" shape="rect">Initialization Response</a> and MUST have a "<code>401 Unauthorized</code>"
+          [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2" shape="rect">10.4.2</a>] status.</li>
+
+          <li>If a request is a <a href="#Initialization_Request" shape="rect">Initialization Request</a> that fails <a href=
+          "#Initialization_Request_Validation" shape="rect">validation</a>, the response MUST NOT be a <a href=
+          "#Initialization_Response" shape="rect">Initialization Response</a> or <a href="#Continuation_Response" shape=
+          "rect">Continuation Response</a>, and MUST have a "<code>400 Bad Request</code>" [<a href="#ref-HTTP" shape=
+          "rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1" shape="rect">10.4.1</a>]
+          status.</li>
+
+          <li>If a request is a <a href="#Continuation_Request" shape="rect">Continuation Request</a> that passes <a href=
+          "#Continuation_Request_Validation" shape="rect">validation</a>, the response MUST be a <a href=
+          "#Continuation_Response" shape="rect">Continuation Response</a>, with any status code from [<a href="#ref-HTTP"
+          shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10" shape="rect">Section
+          10</a>] according to the rules of that specification, with the exception of "<code>401 Unauthorized</code>" [<a href=
+          "#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2" shape=
+          "rect">10.4.2</a>].</li>
+
+          <li>If a request is a <a href="#Continuation_Request" shape="rect">Continuation Request</a> that fails <a href=
+          "#Continuation_Request_Validation" shape="rect">validation</a>, the response SHOULD be a <a href=
+          "#Challenge_Response" shape="rect">Challenge Response</a>, and MUST have a "<code>401 Unauthorized</code>" [<a href=
+          "#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2" shape=
+          "rect">10.4.2</a>] status. The requester may subsequently send an <a href="#Initialization_Request" shape=
+          "rect">initialization request</a>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" title="Protocol_Directives">
+      <h2>4. <a name="Protocol_Directives" id="Protocol_Directives">Protocol Directives</a></h2>
+
+      <p>All protocol parameters feature as directives in <a href="#Initialization_Messages" shape="rect">initialization
+      messages</a> and <a href="#Continuation_Response" shape="rect">continuation messages</a>. These directives are detailed
+      in this section.</p>
+
+      <div class="section" title="id">
+        <h3>4.1. <a name="id" id="id">id</a></h3>
+
+        <p>The <code>id</code> directive in an <a href="#Initialization_Request" shape="rect">initialization request</a> is the
+        requester's <a href="#Peer_Identifiers" shape="rect">Peer Identifier</a>. From the responder's perspective, this acts
+        as a logical reference to the requester's public-key.</p>
+
+        <p>The <code>id</code> directive in an <a href="#Initialization_Response" shape="rect">initialization response</a> or a
+        <a href="#Challenge_Response" shape="rect">challenge response</a> is the responder's <a href="#Peer_Identifiers" shape=
+        "rect">Peer Identifier</a>. From the requester's perspective, this acts as a logical reference to the responder's
+        public-key.</p>
+      </div>
+
+      <div class="section" title="dh">
+        <h3>4.2. <a name="dh" id="dh">dh</a></h3>
+
+        <p>The <code>dh</code> directive in an <a href="#Initialization_Request" shape="rect">initialization request</a> and an
+        <a href="#Initialization_Response" shape="rect">initialization response</a> provides the sending peer's ephemeral
+        Diffie-Hellman public key.</p>
+
+        <p>This directive is calculated as follows:</p>
+        <pre class="normative" xml:space="preserve">
+dh = g ^ dh-private MOD p  
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>g</code> is the generator of the Diffie-Hellman group. The latter is chosen by the requester and identified
+          by the <code><a href="#group" shape="rect">group</a></code> directive in the <a href="#Initialization_Request" shape=
+          "rect">initialization request</a>.</li>
+
+          <li><code>p</code> is the prime modulus of the Diffie-Hellman group.</li>
+
+          <li><code>private-dh</code> is a random integer in the range: <code>2...q-2</code> where <code>q</code> is the
+          subgroup order of the Diffie-Hellman group. Note that <span style="whitespace:no-wrap"><code>q =
+          (p-1)/2</code></span> for all the MUST IMPLEMENT <a href="#group" shape="rect">groups</a>.</li>
+        </ul>
+
+        <p>The value of <code>private-dh</code> is chosen by the sending peer from a source of cryptographic-quality
+        randomness, and is treated as strictly private. It SHOULD be generated anew for each new initialization, in which case
+        it SHOULD be discarded immediately after the computation of the <a href="#Shared_Secret" shape="rect">shared
+        secret</a>. However if computational resources are limited it MAY be reused across multiple initializations, but this
+        will affect the effective extent of the protocol's claim to forward secrecy.</p>
+      </div>
+
+      <div class="section" title="certificate">
+        <h3>4.3. <a name="certificate" id="certificate">certificate</a></h3>
+
+        <p>The optional <code>certificate</code> directive in an <a href="#Initialization_Request" shape="rect">initialization
+        request</a> and an <a href="#Initialization_Response" shape="rect">initialization response</a> provides the sending
+        peer's certificate containing its (purported) authentication public key. The directive may also be employed for
+        informational purposes in a <a href="#Challenge_Response" shape="rect">challenge response</a>. In some use-cases a
+        peer's public key is prior-knowledge from the perspective of the other peer, and thus the <code>certificate</code>
+        directive is not required.</p>
+
+        <p>If employed, its value MUST be a valid URI as specified in [<a href="#ref-URI" shape="rect">URI</a>] Section 3.
+        Certificates provided by the <code>certificate</code> directive MUST be in X509 [<a href="#ref-X509" shape=
+        "rect">X509</a>] certificate format to allow (if required) the use of a Public Key Infrastructure.</p>
+
+        <p>Implementations MAY support either or all of the following:</p>
+
+        <ol>
+          <li>transmission of the X509 certificate itself using a "data" URI scheme. [<a href="#ref-DATA" shape=
+          "rect">DATA</a>]. For example:
+            <pre class="example" xml:space="preserve">
+certificate=data:application/x-x509-user-cert;base64,MIGfMA0GCSqGSI...
+</pre>(the value is lengthy and has therefore been abbreviated; the terminating ellipsis "..." would NOT appear in an actual
+value)
+          </li>
+
+          <li>provision of a URL for retrieving the X509 certificate. For example:
+            <pre class="example" xml:space="preserve">
+certificate=http://alice.example.com/my-cert
+</pre>
+          </li>
+
+          <li>use of the bespoke URI "<code>this:entity-body</code>" to indicate that the X509 certificate is carried in the
+          message entity-body. For example
+            <pre class="example" xml:space="preserve">
+certificate=this:entity-body
+</pre>
+          </li>
+        </ol>
+
+        <p>In all cases, the Mine-Type of the certificate payload MUST be "<code>application/x-x509-user-cert</code>".
+        Certificates in entity-bodies may optionally have the PEM specified header, footer and line breaks.</p>
+
+        <p>Note that in the first usage, the certificate payload itself features in the <a href="#Initialization_Transcript"
+        shape="rect">Initialization Transcript</a> and its presence in the initialisation stage is thus authenticated by the
+        <a href="#signature" shape="rect">signature</a>. This may be considered favourable in some use-cases.</p>
+      </div>
+
+      <div class="section" title="url">
+        <h3>4.4. <a name="url" id="url">url</a></h3>
+
+        <p>The <code>url</code> directive in an <a href="#Initialization_Request" shape="rect">initialization request</a> and a
+        <a href="#Continuation_Request" shape="rect">continuation request</a> is the the absolute URL of that request. The
+        latter is duplicated in this directive because proxies are legitimately allowed to change the Request-Line in
+        transit.</p>
+
+        <p>The responder MUST confirm that the value of this directive is equivalent to the absolute URL implied by the
+        request's <code>Request-Line</code> [<a href="#ref-HTTP" shape="rect">HTTP</a>] and <code>Host</code> [<a href=
+        "#ref-HTTP" shape="rect">HTTP</a>] header. Equivalence conditions for URLs are given in [<a href="#ref-URI" shape=
+        "rect">URI</a>] Section 6.</p>
+      </div>
+
+      <div class="section" title="group">
+        <h3>4.5. <a name="group" id="group">group</a></h3>
+
+        <p>The <code>group</code> directive in an <a href="#Initialization_Request" shape="rect">initialization request</a> is
+        the identifier of a Diffie-Hellman modular exponential group, as chosen by the requester. It's value MUST NOT contain
+        whitespace.</p>
+
+        <p>Any or all of the following identifiers and their associated groups MAY be implemented:</p>
+        <pre class="normative" xml:space="preserve">
+"rfc3526#14"  ; group #14 defined in [<a href="#ref-MODP" shape="rect">MODP</a>]
+"rfc3526#15"  ; group #15 defined in [<a href="#ref-MODP" shape="rect">MODP</a>]
+"rfc3526#16"  ; group #16 defined in [<a href="#ref-MODP" shape="rect">MODP</a>]
+"rfc3526#17"  ; group #17 defined in [<a href="#ref-MODP" shape="rect">MODP</a>]
+"rfc3526#18"  ; group #18 defined in [<a href="#ref-MODP" shape="rect">MODP</a>]
+</pre>
+
+        <p>Other identifiers may be also defined.</p>
+      </div>
+
+      <div class="section" title="nonce">
+        <h3>4.6. <a name="nonce" id="nonce">nonce</a></h3>
+
+        <p>The <code>nonce</code> directive in an <a href="#Initialization_Request" shape="rect">initialization request</a>
+        allows the requester to send a random value to the responder. This acts as an authentication challenge to the
+        responder, who is challenged to posses the correct private key in order to create a valid <a href="#signature" shape=
+        "rect"><code>signature</code></a> directive in the <a href="#Initialization_Response" shape="rect">initialization
+        response</a>.</p>
+
+        <p>This value is a base64 encoded 256 bit cryptographic-quality random value, which MUST be generated afresh by the
+        requester for each new initialization.</p>
+      </div>
+
+      <div class="section" title="auth">
+        <h3>4.7. <a name="auth" id="auth">auth</a></h3>
+
+        <p>The <code>auth</code> directive in an <a href="#Initialization_Response" shape="rect">initialization response</a>
+        allows the responder to send an encrypted random value to the requester. This acts as an authentication challenge to
+        the requester. The random value <code>auth-secret</code>is encrypted in the requester's public key, yet features
+        unencrypted in the <a href="#Shared_Secret" shape="rect">shared secret</a> which must be identically known to both
+        parties for the authentication success of subsequent <a href="#Continuation_Messages" shape="rect">continuation
+        messages</a>. The requester is thus challenged to posses the correct private key to decrypt the value of the
+        <code>auth</code> directive.</p>
+
+        <p>The <code>auth</code> directive is computed as follows:</p>
+        <pre class="normative" xml:space="preserve">
+auth = base64enc( ENC( public-key, auth-secret ) )
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>base64enc()</code> is base64 encoding, bytes to string.</li>
+
+          <li><code>ENC( k, pt )</code> is encryption according to the <a href="#Encryption_Scheme" shape="rect">Encryption
+          Scheme</a> in public key <code>k</code> of plaintext <code>pt</code>.</li>
+
+          <li><code>public-key</code> is the <a href="#Public_Key_Algorithm" shape="rect">public key</a> associated
+          (subjectively, by the responder) with the requester.</li>
+
+          <li><code>auth-secret</code> is 256 bit cryptographic-quality random value generated by the responder, which MUST be
+          generated afresh by the responder for each new initialization.</li>
+        </ul>
+
+        <p>The requester decrypts the <code>auth</code> directive to retrieve the <code>auth-secret</code> value as
+        follows:</p>
+        <pre class="normative" xml:space="preserve">
+auth-secret = DEC( private-key, base64dec( auth ) )
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>base64dec()</code> is base64 decoding, string to bytes.</li>
+
+          <li><code>DEC( k, ct )</code> is decryption according to the <a href="#Encryption_Scheme" shape="rect">Encryption
+          Scheme</a> with private key <code>k</code> of ciphertext value <code>ct</code>.</li>
+
+          <li><code>private-key</code> is the requester's <a href="#Public_Key_Algorithm" shape="rect">private key</a>.</li>
+
+          <li><code>auth-secret</code> is 256 bit random value.</li>
+        </ul>
+      </div>
+
+      <div class="section" title="token">
+        <h3>4.8. <a name="token" id="token">token</a></h3>
+
+        <p>In an <a href="#Initialization_Response" shape="rect">initialization response</a>, the <code>token</code> directive
+        is is an opaque reference to the newly initialized shared-secret arrangement. Its value is chosen by the responder, and
+        MUST be unique within the responder's record of valid tokens. It's value MUST NOT contain whitespace, but its length or
+        other characteristics are not otherwise constrained.</p>
+
+        <p>In a <a href="#Continuation_Request" shape="rect">continuation Request</a> the <code>token</code> directive is
+        employed by the requester as a reference to a previously initialized shared-secret arrangement. From the perspective of
+        both the request's requester and its responder, the referenced arrangement implies the <a href="#MAC_Keys" shape=
+        "rect">MAC keys</a> to create or validate <a href="#mac" shape="rect"><code>mac</code></a> directives, and implies the
+        <a href="#Cipher_Keys" shape="rect">cipher keys</a> for <a href="#Message_Body_Ciphering" shape="rect">message body
+        ciphering</a> or deciphering.</p>
+      </div>
+
+      <div class="section" title="signature">
+        <h3>4.9. <a name="signature" id="signature">signature</a></h3>
+
+        <p>The <code>signature</code> directive in an <a href="#Initialization_Response" shape="rect">initialization
+        response</a> is used to verify the integrity of all the initialization directives and thus allows the requester to
+        authenticate the responder prior to making any continuation requests.</p>
+
+        <p>The <code>signature</code> directive is computed by the responder as follows:</p>
+        <pre class="normative" xml:space="preserve">
+signature = base64enc( SIGN( private-key, init-transcript ) )
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>base64enc()</code> is base64 encoding, bytes to string.</li>
+
+          <li><code>SIGN(k,m)</code> is the signature over string <code>m</code> using private key <code>k</code> according to
+          the <a href="#Signature_Scheme" shape="rect">Signature Scheme</a>.</li>
+
+          <li><code>private-key</code> is the responder's authentication key private key.</li>
+
+          <li><code>init-transcript</code> is a concatenation of all the initialization directives, computed according to the
+          <a href="#Initialization_Transcript" shape="rect">Initialization Transcript</a> section.</li>
+        </ul>
+
+        <p>The <code>signature</code> directive is validated by the requester as follows:</p>
+        <pre class="normative" xml:space="preserve">
+VALIDATE( public-key, init-transcript, base64dec( signature ) )
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>base64dec()</code> is base64 decoding, string to bytes.</li>
+
+          <li><code>VALIDATE(k,m,s)</code> is the validation of a signature <code>s</code> over a string <code>m</code> using
+          public key <code>k</code>, according to the <a href="#Signature_Scheme" shape="rect">Signature Scheme</a>.</li>
+
+          <li><code>signature</code> is the value of the received directive.</li>
+
+          <li><code>public-key</code> is the public key associated (subjectively, by the requester) with the responder. Note
+          that this may or may not be equivalent the public key implied by the <a href="#certificate" shape=
+          "rect"><code>certificate</code></a> directive, depending on the trust mechanism employed by the requester.</li>
+
+          <li><code>init-transcript</code> is a concatenation of all the initialization directives, computed according to the
+          <a href="#Initialization_Transcript" shape="rect">Initialization Transcript</a> section.</li>
+        </ul>
+      </div>
+
+      <div class="section" title="count">
+        <h3>4.10. <a name="count" id="count">count</a></h3>
+
+        <p>The <code>count</code> directive is a sequence counter for continuation messages. This directive allows the
+        detection of message replays and provides partial message sequence integrity. It is also required for the production of
+        unique initialization vectors for <a href="#Message_Body_Ciphering" shape="rect">message body ciphering</a>.</p>
+
+        <p>The value of the <code>count</code> directive is a decimal number. In a request, it MUST be greater than zero and
+        less than (2^128 - 1). In a response, it MUST be greater than one and less than or equal to (2^128 - 1).</p>
+
+        <p>The following constraints apply to this directive in continuation messages containing identical <code><a href=
+        "#token" shape="rect">token</a></code> directive values. Messages with identical or out-of-sequence <code>count</code>
+        directive values MUST be rejected by the receiving peer. Peers MUST validate the <code>count</code> directive in each
+        received message to establish uniqueness and correct sequence. Each peer is required to maintain a local record of the
+        value of the <code>count</code> directive employed in the last continuation message that it sent. The validity
+        constraints and logic for setting this directive differ slightly from the perspectives of the two peers:</p>
+
+        <dl>
+          <dt>requester's perspective:</dt>
+
+          <dd>A received response MUST have a <code>count</code> value of N+1, where N is the <code>count</code> value in the
+          associated request.</dd>
+
+          <dt>requester's perspective:</dt>
+
+          <dd>A received request's <code>count</code> value N MUST be <i>strictly greater</i> than the <code>count</code> value
+          that the responder sent in its last response. The response MUST be given a <code>count</code> value of N+1.</dd>
+        </dl>
+
+        <p>If a first request receives no response, the <code>count</code> directive in a second request that immediately
+        follows should increment by (at least) 2, to allow for the fact that the unreceived response was nevertheless sent by
+        the responder. In the case that the first request contained an "<code>Expect: 100-continue</code>" header [<a href=
+        "#ref-HTTP" shape="rect">HTTP</a>][<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20" shape=
+        "rect">14.20</a>] the increment should be (at least) 3, as such requests may elicit two distinct responses.</p>
+      </div>
+
+      <div class="section" title="mac">
+        <h3>4.11. <a name="mac" id="mac">mac</a></h3>
+
+        <p>The <code>mac</code> directive in a <a href="#Continuation_Request" shape="rect">continuation request</a> and a
+        <a href="#Continuation_Response" shape="rect">continuation response</a> is a keyed message authentication code computed
+        on the values of protocol directives and specific HTTP headers present in that continuation transaction. It employs a
+        <a href="#MAC_Keys" shape="rect">MAC Key</a> derived from the <a href="#Shared_Secret" shape="rect">Shared
+        Secret</a>.</p>
+
+        <p>To create a message authentication code for a message either prior to sending it or in order to validate it, the
+        appropriate computation is made as follows:</p>
+        <pre class="normative" xml:space="preserve">
+Request:
+   mac = base64enc( HMAC( request-mac-key,  request-transcript  ) )
+
+Response:
+   mac = base64enc( HMAC( response-mac-key, response-transcript ) )
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li><code>base64enc()</code> is base64 encoding, bytes to string.</li>
+
+          <li><code>HMAC(k,d)</code> is the Hashed Message Authentication Code [<a href="#ref-HMAC" shape="rect">HMAC</a>]
+          using key <code>k</code> applied to byte data <code>d</code>, employed using the <a href="#Hash_Algorithm" shape=
+          "rect">Hash Algorithm</a>.</li>
+
+          <li><code>request-mac-key</code> and <code>response-mac-key</code> are as derived in the section <a href="#MAC_Keys"
+          shape="rect">MAC Keys</a>.</li>
+
+          <li><code>request-transcript</code> is computed according to the <a href="#Continuation_Request_Transcript" shape=
+          "rect">Continuation Request Transcript</a> section.</li>
+
+          <li><code>response-transcript</code> is computed according to the <a href="#Continuation_Response_Transcript" shape=
+          "rect">Continuation Response Transcript</a> section.</li>
+        </ul>
+
+        <p>The message authentication codes are formulated so as to provide the following:</p>
+
+        <ul>
+          <li>message originator authentication;</li>
+
+          <li>integrity protection for the protocol directives of this specification;</li>
+
+          <li>integrity protection for the minimal set of HTTP headers designated as "non-modifiable" by intermediate caches
+          [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.5.2" shape="rect">13.5.2</a>]. These headers are
+          Content-Location, Content-MD5, ETag, Last-Modified, Expires, Content-Range, and Content-Type;</li>
+
+          <li>integrity protection for the message entity-body, if accompanied by a <a href="#digest" shape="rect">digest</a>
+          directive.</li>
+        </ul>
+
+        <p>The sender of a message computes and provides the message authentication code for that message. To validate it, the
+        recipient of the message also computes its message authentication code and compares the received value with the
+        computed value. If (1) they are strictly equal, and (2) the <code><a href="#digest" shape="rect">digest</a></code>
+        directive (if present) is confirmed to indeed equal the hash of the message entity-body, then the above authentication
+        characteristics are considered to be established. If not, the message MUST be rejected. This two stage process permits
+        computationally inexpensive invalidity checks to be performed before embarking on the potentially expensive process of
+        computing the <code><a href="#digest" shape="rect">digest</a></code> over an arbitrary length entity-body.</p>
+      </div>
+
+      <div class="section" title="digest">
+        <h3>4.12. <a name="digest" id="digest">digest</a></h3>
+
+        <p>The the optional <code>digest</code> directive in a <a href="#Continuation_Request" shape="rect">continuation
+        request</a> or a <a href="#Continuation_Response" shape="rect">continuation response</a> is a hash digest of the
+        message entity-body. It's role is to enable message entity-body authentication: its value is an input to the
+        computation of the <a href="#mac" shape="rect"><code>mac</code></a> directive (via the appropriate message transcript).
+        This directive SHOULD be present in any continuation message for which it is feasible to calculate a hash digest of the
+        entity-body (including, trivially, all those with an empty entity-body).</p>
+
+        <p>The value of the <code>digest</code> directive is a hash of the entity-body, computed using the <a href=
+        "#Hash_Algorithm" shape="rect">Hash Algorithm</a>. The hash MUST be computed on the entity-body as manifest
+        <em>after</em> all encodings declared in the Content-Encoding [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11" shape="rect">14.11</a>] header (including the cipher
+        encoding with the identifier "<code>x-httpsec/1.0-cipher</code>" defined in the <a href="#Message_Body_Ciphering"
+        shape="rect">Message Body Ciphering</a> section) and <em>before</em> Transfer-Encoding [<a href="#ref-HTTP" shape=
+        "rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.41" shape=
+        "rect">14.41</a>].</p>
+
+        <p>The absence of the <code>digest</code> directive implies that the message entity-body is not authenticated. This may
+        be the case if the entity-body cannot be hashed for some reason by the message sender, for instance if it is a stream
+        of indeterminate length.</p>
+
+        <p>The value of the <code>digest</code> directive MUST be base64 encoded. For empty message bodies, it is the following
+        constant (being the Base64 representation of the <a href="#Hash_Algorithm" shape="rect">hash</a> of zero bytes):</p>
+        <pre class="normative" xml:space="preserve">
+47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+</pre>
+      </div>
+    </div>
+
+    <div class="section" title="Other_Headers">
+      <h2>5. <a name="Other_Headers" id="Other_Headers">Other Headers</a></h2>
+
+      <p>This specification impacts on certain other HTTP header field definitions, as detailed in this section.</p>
+
+      <div class="section" title="Content-Encoding">
+        <h3>5.1. <a name="Content-Encoding" id="Content-Encoding">Content-Encoding</a></h3>
+
+        <p>The Content-Encoding header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11" shape="rect">14.11</a>] MAY contain the value
+        "<code>x-httpsec/1.0-cipher</code>" in its enumeration of applied encodings, to indicate that the message entity body
+        is ciphered according to this specification - see the <a href="#Message_Body_Ciphering" shape=
+        "rect">Message_Body_Ciphering</a> section for details.</p>
+      </div>
+
+      <div class="section" title="Cache-Control">
+        <h3>5.2. <a name="Cache-Control" id="Cache-Control">Cache-Control</a></h3>
+
+        <p>The <code>Cache-Control</code> header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9" shape="rect">14.9</a>] MUST be present in every
+        <a href="#Initialization_Response" shape="rect">initialization response</a> and <a href="#Continuation_Response" shape=
+        "rect">continuation response</a>. It MUST contain at minimum the <code>no-transform</code> directive [<a href=
+        "#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.5" shape=
+        "rect">14.9.5</a>]. See the <a href="#Cache_Considerations" shape="rect">Cache Considerations</a> section for
+        additional discussion.</p>
+      </div>
+
+      <div class="section" title="Expires">
+        <h3>5.3. <a name="Expires" id="Expires">Expires</a></h3>
+
+        <p>The Expires header [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21" shape="rect">14.21</a>] MUST be present in every
+        <a href="#Initialization_Response" shape="rect">initialization response</a> and <a href="#Continuation_Response" shape=
+        "rect">continuation response</a>. responses. Its value MUST be the system clock time, current at the time of the
+        preparation of the response's <code>WWW-Authenticate: httpsec/1.0 continue</code> header. Whist the value of this
+        header appears in the computation of the <a href="#mac" shape="rect">mac</a> directive, it has no explicit role in
+        <a href="#Message_Validation" shape="rect">message validation</a>. See also the <a href="#Cache_Considerations" shape=
+        "rect">Cache Considerations</a> section for additional discussion.</p>
+      </div>
+    </div>
+
+    <div class="section" title="Protocol_Computations">
+      <h2>6. <a name="Protocol_Computations" id="Protocol_Computations">Protocol Computations</a></h2>
+
+      <div class="section" title="Algorithms">
+        <h3>6.1. <a name="Algorithms" id="Algorithms">Algorithms</a></h3>
+
+        <p>Wherever they are referred to in this specification, the cryptographic primitives defined in this section MUST be
+        employed.</p>
+
+        <div class="section" title="Hash_Algorithm">
+          <h4>6.1.1. <a name="Hash_Algorithm" id="Hash_Algorithm">Hash Algorithm</a></h4>
+
+          <p>SHA-256 [<a href="#ref-SHA" shape="rect">SHA</a>].</p>
+        </div>
+
+        <div class="section" title="Public_Key_Algorithm">
+          <h4>6.1.2. <a name="Public_Key_Algorithm" id="Public_Key_Algorithm">Public Key Algorithm</a></h4>
+
+          <p>RSA [<a href="#ref-PKCS1" shape="rect">PKCS#1</a>] asymmetric key encryption. The modulus of key MUST be 1024 bits
+          or greater.</p>
+        </div>
+
+        <div class="section" title="Encryption_Scheme">
+          <h4>6.1.3. <a name="Encryption_Scheme" id="Encryption_Scheme">Encryption Scheme</a></h4>
+
+          <p>RSA Optimal Asymmetric Encryption Padding (RSAES-OAEP) [<a href="#ref-PKCS1" shape="rect">PKCS#1</a>], using hash
+          function SHA-1, mask generation function MGF1 (with SHA-1), and the empty-string for the "label" parameter.</p>
+
+          <p>Note: whereas SHA-256 is specified as the <a href="#Hash_Algorithm" shape="rect">Hash Algorithm</a> primitive for
+          employment elsewhere in the protocol, the choice of the SHA-1 here is made for the following reasons:</p>
+
+          <ol>
+            <li>The potential cryptanalytic vulnerability of SHA-1 is not relevant in this context. The role of the hash
+            algorithm in OAEP is merely to hash the label parameter which in this instance is a known constant.</li>
+
+            <li>OAEP with SHA-1 is widely implemented.</li>
+          </ol>
+        </div>
+
+        <div class="section" title="Signature_Scheme">
+          <h4>6.1.4. <a name="Signature_Scheme" id="Signature_Scheme">Signature Scheme</a></h4>
+
+          <p>RSA Probabilistic Signature Scheme (RSASSA-PSS) [<a href="#ref-PKCS1" shape="rect">PKCS#1</a>], using hash
+          function SHA-256, mask generation function MGF1 (with SHA-256), and salt length of 32 bytes.</p>
+        </div>
+
+        <div class="section" title="Block_Cipher">
+          <h4>6.1.5. <a name="Block_Cipher" id="Block_Cipher">Block Cipher</a></h4>
+
+          <p>Advanced Encryption Standard [<a href="#ref-AES" shape="rect">AES</a>], 256 bit key length.</p>
+        </div>
+
+        <div class="section" title="Block_Cipher_Mode">
+          <h4>6.1.6. <a name="Block_Cipher_Mode" id="Block_Cipher_Mode">Block Cipher Mode</a></h4>
+
+          <p>Cipher Block Chaining mode [<a href="#ref-CBC" shape="rect">CBC</a>], with PKCS#5 [<a href="#ref-PKCS5" shape=
+          "rect">PKCS#5</a> ] padding, applied to the <a href="#Block_Cipher" shape="rect">Block Cipher</a>.</p>
+        </div>
+      </div>
+
+      <div class="section" title="Header_Canonicalization">
+        <h3>6.2. <a name="Header_Canonicalization" id="Header_Canonicalization">Header Canonicalization</a></h3>
+
+        <p>The values of various HTTP headers [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+        "http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>] other than the protocol headers
+        also feature in protocol computations, notably the <a href="#signature" shape="rect">signature</a> and <a href="#mac"
+        shape="rect">message authentication codes</a>. The values of these headers MUST first undergo the following
+        canonicalization transformations, applied in strict order:</p>
+
+        <ol>
+          <li>Retrieve the header's literal US-ASCII encoded field-value, including any quotes;</li>
+
+          <li>Remove all whitespace;</li>
+
+          <li>Remove leading or trailing substrings consisting only of semicolons ("<code>;</code>") and/or commas
+          ("<code>,</code>")</li>
+
+          <li>Replace with a single semicolon ("<code>;</code>") any internal substring that consists only of semicolons
+          ("<code>;</code>") and/or commas ("<code>,</code>").</li>
+        </ol>
+
+        <p>For example, the (albeit unlikely) header field-value "<code>;foo,, ; bar;; foo bar;</code>" becomes
+        "<code>foo;bar;foobar</code>".</p>
+
+        <p>Note that this canonicalization is strictly a pre-processing step for the purpose of protocol computations only. It
+        is not a constraint on the actual header field-values that may appear in a message.</p>
+      </div>
+
+      <div class="section" title="Initialization_Transcript">
+        <h3>6.3. <a name="Initialization_Transcript" id="Initialization_Transcript">Initialization Transcript</a></h3>
+
+        <p>The initialization transcript is an input to <a href="#signature" shape="rect">signature</a> creation and
+        validation, and <a href="#Shared_Secret" shape="rect">shared secret</a> computations. It is itself computed as
+        follows:</p>
+        <pre class="normative" xml:space="preserve">
+init-transcript =  
+    "httpsec/1.0" || ":" ||
+     id           || ":" ||   ; from request 
+     dh           || ":" ||   ; from request 
+     certificate  || ":" ||   ; from request 
+     url          || ":" ||   ; from request 
+     group        || ":" ||   ; from request 
+     nonce        || ":" ||   ; from request 
+     id           || ":" ||   ; from response 
+     dh           || ":" ||   ; from response 
+     certificate  || ":" ||   ; from response 
+     token        || ":" ||   ; from response 
+     auth         || ":" ||   ; from response       
+     Expires                  ; from response
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li>The source of the values is indicated by the "from request" and "from response" annotations.</li>
+
+          <li><code>id</code>, <code>dh</code>, <code>certificate</code>, <code>url</code>, <code>group</code>,
+          <code>token</code>, and <code>auth</code> refer to the directives contained in the <a href="#Initialization_Messages"
+          shape="rect">Initialization Messages</a>. They are the directives' literal US-ASCII encoded values exactly as they
+          appear in those headers.</li>
+
+          <li><code>Expires</code> is the value of [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>] header of that name, having
+          undergone canonicalization as detailed in the <a href="#Header_Canonicalization" shape="rect">Header
+          Canonicalization</a> section.</li>
+
+          <li>All values including empty strings are delimited by colons with respect to their neighbouring values. If a
+          specified protocol directive or header is not present in the message, its value is taken to be the empty string.</li>
+        </ul>
+      </div>
+
+      <div class="section" title="Continuation_Request_Transcript">
+        <h3>6.4. <a name="Continuation_Request_Transcript" id="Continuation_Request_Transcript">Continuation Request
+        Transcript</a></h3>
+
+        <p>The continuation request transcript is an input to <a href="#mac" shape="rect">mac</a> directive creation and
+        validation. It is itself computed as follows:</p>
+        <pre class="normative" xml:space="preserve">
+request-transcript =                 
+    "httpsec/1.0"     || ":"
+  || token            || ":"   
+  || count            || ":"
+  || url              || ":"
+  || digest           || ":"
+  || Method           || ":"
+  || Content-MD5      || ":"
+  || Content-Encoding || ":"
+  || Content-Range    || ":"
+  || Content-Type
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ol>
+          <li>All values are taken from the request.</li>
+
+          <li><code>token</code>, <code>count</code>, <code>url</code>, and <code>digest</code> refer to the <a href=
+          "#Protocol_Directives" shape="rect">protocol directives</a> with those names. They are the directives' literal
+          US-ASCII encoded values exactly as they appear in those headers.</li>
+
+          <li><code>Method</code> is the Method [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.1" shape="rect">5.1.1</a>] from the request's
+          Request-Line [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1" shape="rect">5.1</a>].</li>
+
+          <li><code>Content-MD5</code>, <code>Content-Encoding</code>, <code>Content-Range</code>, and
+          <code>Content-Type</code> refer to [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>] headers. Their values MUST first
+          undergo canonicalization as detailed in the <a href="#Header_Canonicalization" shape="rect">Header
+          Canonicalization</a> section.</li>
+        </ol>
+      </div>
+
+      <div class="section" title="Continuation_Response_Transcript">
+        <h3>6.5. <a name="Continuation_Response_Transcript" id="Continuation_Response_Transcript">Continuation Response
+        Transcript</a></h3>
+
+        <p>The continuation response transcript is an input to <a href="#mac" shape="rect">mac</a> directive creation and
+        validation. It is itself computed as follows:</p>
+        <pre class="normative" xml:space="preserve">
+response-transcript = 
+    "httpsec/1.0"     || ":"
+  || token            || ":"   ; from request
+  || count            || ":"
+  || url              || ":"   ; from request
+  || digest           || ":"
+  || Method           || ":"   ; from request
+  || Status-Code      || ":"
+  || Content-Location || ":"
+  || Content-MD5      || ":"
+  || ETag             || ":"
+  || Last-Modified    || ":"
+  || Expires          || ":"
+  || Content-Encoding || ":"
+  || Content-Range    || ":"
+  || Content-Type
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ol>
+          <li>Values are taken from the response, unless indicated by the "from request" annotation.</li>
+
+          <li><code>token</code>, <code>count</code>, <code>url</code>, and <code>digest</code> refer to the <a href=
+          "#Protocol_Directives" shape="rect">protocol directives</a> with those names. They are the directives' literal
+          US-ASCII encoded values exactly as they appear in those headers.</li>
+
+          <li><code>Method</code> is the Method [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.1" shape="rect">5.1.1</a>] from the request's
+          Request-Line [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1" shape="rect">5.1</a>].</li>
+
+          <li><code>Status-Code</code> is the three digit Status Code [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1.1" shape="rect">6.1.1</a>] from the response's
+          Status-Line [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1" shape="rect">6.1</a>].</li>
+
+          <li><code>Content-Location</code>, <code>Content-MD5</code>, <code>ETag</code>, <code>Last-Modified</code>,
+          <code>Expires</code>, <code>Content-Encoding</code>, <code>Content-Range</code>, and <code>Content-Type</code> refer
+          to [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2" shape="rect">4.2</a>] headers. Their values MUST first
+          undergo canonicalization as detailed in the <a href="#Header_Canonicalization" shape="rect">Header
+          Canonicalization</a> section.</li>
+        </ol>
+      </div>
+
+      <div class="section" title="Shared_Secret">
+        <h3>6.6. <a name="Shared_Secret" id="Shared_Secret">Shared Secret</a></h3>
+
+        <p>The security of the protocol depends on the requester and responder establishing an (authenticated) shared secret.
+        Continuation messages employ <a href="#Keys" shape="rect">keys</a> that are derived from this secret value.</p>
+
+        <p>The value <code>shared-secret</code> is computed as follows:</p>
+        <pre class="normative" xml:space="preserve">
+shared-secret = H(H( dh-shared-secret || auth-secret || init-transcript ))
+</pre>
+
+        <p>where the following apply:</p>
+
+        <ul>
+          <li>
+            <code>dh-shared-secret</code> is calculated by the requester as follows:
+            <pre class="normative" xml:space="preserve">
+dh-shared-secret = dh ^ dh-private MOD p          
+</pre>where <a href="#dh" shape="rect"><code>dh</code></a> is from the <a href="#Initialization_Response" shape="rect">
+            initialization response</a>, <code>dh-private</code> is the requester's private Diffie-Hellman value (see <a href=
+            "#dh" shape="rect"><code>dh</code></a> ) and <code>p</code> is the prime modulus of the Diffie-Hellman group chosen
+            by the requester.
+          </li>
+
+          <li>
+            <code>dh-shared-secret</code> is calculated by the responder as follows:
+            <pre class="normative" xml:space="preserve">
+dh-shared-secret = dh ^ dh-private MOD p
+</pre>where <a href="#dh" shape="rect"><code>dh</code></a> is from the <a href="#Initialization_Request" shape="rect">
+            initialization request</a>, <code>dh-private</code> is the responders's private Diffie-Hellman value (see <a href=
+            "#dh" shape="rect"><code>dh</code></a> ) and <code>p</code> is the prime modulus of the Diffie-Hellman group
+            identified by the <code><a href="#group" shape="rect">group</a></code> directive in the <a href=
+            "#Initialization_Request" shape="rect">initialization request</a>.
+          </li>
+
+          <li><code>auth-secret</code> is the 256 bit random value generated by the responder. It is passed in encrypted form
+          to the requester via the <code><a href="#auth" shape="rect">auth</a></code> directive in the <a href=
+          "#Initialization_Response" shape="rect">initialization response</a>.</li>
+
+          <li><code>init-transcript</code> is a concatenation of all the initialization directives, computed according to the
+          <a href="#Initialization_Transcript" shape="rect">Initialization Transcript</a> section.</li>
+
+          <li><code>H(H())</code> is the <a href="#Hash_Algorithm" shape="rect">Hash Algorithm</a> iteratively applied
+          twice.</li>
+        </ul>
+      </div>
+
+      <div class="section" title="Keys">
+        <h3>6.7. <a name="Keys" id="Keys">Keys</a></h3>
+
+        <p>From the <a href="#Shared_Secret" shape="rect">Shared Secret</a>, both peers derive identical <a href="#MAC_Keys"
+        shape="rect">MAC keys</a> and <a href="#Cipher_Keys" shape="rect">Cipher Keys</a>. Since the Shared Secret is static
+        throughout the lifetime of a particular shared secret arrangement, the keys may be computed once from the shared-secret
+        by each peer and stored for the lifetime of that arrangement. The shared-secret SHOULD be discarded immediately
+        thereafter.</p>
+
+        <div class="section" title="MAC_Keys">
+          <h4>6.7.1. <a name="MAC_Keys" id="MAC_Keys">MAC Keys</a></h4>
+
+          <p>The MAC keys for computing <a href="#mac" shape="rect">mac</a> directives are produced as follows:</p>
+          <pre class="normative" xml:space="preserve">
+request-mac-key  = H(H( shared-secret || "request MAC key"  ))
+
+response-mac-key = H(H( shared-secret || "response MAC key" ))
+</pre>
+
+          <p>where the following apply:</p>
+
+          <ul>
+            <li>String literals are ASCII without length or zero-termination;</li>
+
+            <li><code>shared-secret</code> is computed according to the <a href="#Shared_Secret" shape="rect">Shared Secret</a>
+            section.</li>
+
+            <li><code>H(H())</code> is the <a href="#Hash_Algorithm" shape="rect">Hash Algorithm</a> iteratively applied
+            twice.</li>
+          </ul>
+        </div>
+
+        <div class="section" title="Cipher_Keys">
+          <h4>6.7.2. <a name="Cipher_Keys" id="Cipher_Keys">Cipher Keys</a></h4>
+
+          <p>The keys required for <a href="#Message_Body_Ciphering" shape="rect">message body ciphering</a> are computed as
+          follows:</p>
+          <pre class="normative" xml:space="preserve">
+request-cipher-key  = H(H( shared-secret || "request cipher key"  ))
+
+response-cipher-key = H(H( shared-secret || "response cipher key" ))
+</pre>
+
+          <p>where the following apply:</p>
+
+          <ul>
+            <li>String literals are ASCII without length or zero-termination.</li>
+
+            <li><code>shared-secret</code> is computed according to the <a href="#Shared_Secret" shape="rect">Shared Secret</a>
+            section.</li>
+
+            <li><code>H(H())</code> is the <a href="#Hash_Algorithm" shape="rect">Hash Algorithm</a> iteratively applied
+            twice.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" title="Message_Body_Ciphering">
+        <h3>6.8. <a name="Message_Body_Ciphering" id="Message_Body_Ciphering">Message Body Ciphering</a></h3>
+
+        <p>Message entity-body ciphering may be be applied to any continuation message, at the discretion of the sending peer.
+        If entity-body ciphering is applied, this MUST be indicated by the presence of the "<code>x-httpsec/1.0-cipher</code>"
+        identifier in the enumeration of applied encodings declared by the <a href="#Content-Encoding" shape=
+        "rect">Content-Encoding</a> header. The order of operations is "cipher-then-authenticate", i.e. if used ciphering MUST
+        be applied before the <a href="#digest" shape="rect">digest</a> computation.</p>
+
+        <p>The ciphering of messages whose entity-body is empty will cause the entity-body to become non-empty as an artifact
+        of padding scheme specified in the <a href="#Block_Cipher_Mode" shape="rect">Block Cipher Mode</a>. This should be
+        taken into consideration when preparing messages for which it is illegal to have an entity body, such as GET requests,
+        HEAD requests, and HEAD responses.</p>
+
+        <p>It is important to note that message entity-body ciphering in the absence of message authentication provides no
+        detection of tampering during message transport. Entity-bodies are "ciphered but not authenticated" if they declare
+        "<code>x-httpsec/1.0-cipher</code>" in the <a href="#Content-Encoding" shape="rect">Content-Encoding</a> header, but
+        have no <code><a href="#digest" shape="rect">digest</a></code> directive. This outcome SHOULD be restricted to
+        circumstances where it is unfeasible to compute the <code><a href="#digest" shape="rect">digest</a></code> hash, for
+        instance when the entity-body is a stream of indeterminate length.</p>
+
+        <p>Request entity-bodies are enciphered and deciphered as follows:</p>
+        <pre class="normative" xml:space="preserve">
+Encipher:
+   &lt;body-cipher&gt; = ENCIPHER-MODE( request-cipher-key, IV, &lt;body-plain&gt; )
+
+Decipher:
+   &lt;body-plain&gt;  = DECIPHER-MODE( request-cipher-key, IV, &lt;body-cipher&gt; )
+
+where:
+   IV = ENCIPHER( request-cipher-key, Bytes16( count ) )
+</pre>
+
+        <p>Response entity-bodies are enciphered and deciphered as follows:</p>
+        <pre class="normative" xml:space="preserve">
+Encipher:
+   &lt;body-cipher&gt; = ENCIPHER-MODE( response-cipher-key, IV, &lt;body-plain&gt; )
+
+Decipher:
+   &lt;body-plain&gt;  = DECIPHER-MODE( response-cipher-key, IV, &lt;body-cipher&gt; )
+
+where:
+   IV = ENCIPHER( request-cipher-key, Bytes16( count ) )
+</pre>
+
+        <p>The following are defined and apply to both requests and responses:</p>
+
+        <ul>
+          <li><code>request-cipher-key</code> and <code>response-cipher-key</code> are as derived in the section <a href=
+          "#Cipher_Keys" shape="rect">Cipher Keys</a>.</li>
+
+          <li><code>count</code> is the numerical value implied by the <code><a href="#count" shape="rect">count</a></code>
+          directive of the message being enciphered/deciphered.</li>
+
+          <li><code>Bytes16(x)</code> is the value <code>x</code> encoded with leading zeros in exactly 16 bytes, most
+          significant bits first, most significant byte first.</li>
+
+          <li><code>ENCIPHER(k,b)</code> is the block enciphering function employing this specification's <a href=
+          "#Block_Cipher" shape="rect">Block Cipher</a>, using key <code>k</code>, applied to input block <code>b</code>.
+          Lengths are as follows: <code>k</code> is 32 bytes, and <code>b</code> is 16 bytes.</li>
+
+          <li><code>ENCIPHER-MODE(k,iv,t)</code> is the chained enciphering function employing this specification's <a href=
+          "#Block_Cipher_Mode" shape="rect">Block Cipher Mode</a>, using key <code>k</code>, initialization vector
+          <code>iv</code>, applied to input text <code>t</code>. Lengths are as follows: <code>k</code> is 32 bytes,
+          <code>n</code> is 16 bytes, <code>t</code> is of arbitrary length.</li>
+
+          <li><code>DECIPHER-MODE(k,iv,t)</code> is the chained deciphering function employing this specification's <a href=
+          "#Block_Cipher_Mode" shape="rect">Block Cipher Mode</a>, using key <code>k</code>, initialization vector
+          <code>iv</code>, applied to input text <code>t</code>. Lengths are as follows: <code>k</code> is 32 bytes,
+          <code>n</code> is 16 bytes, <code>t</code> is of arbitrary length.</li>
+
+          <li><code>&lt;body-plain&gt;</code> is the plaintext bytes of the message entity-body, as manifest <i>after</i> all
+          encoding declared in the Content-Encoding [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11" shape="rect">14.11</a>] header are applied.</li>
+
+          <li><code>&lt;body-cipher&gt;</code> is the ciphertext bytes of the message entity-body, as manifest <em>before</em>
+          any encodings declared in the Transfer-Encoding [<a href="#ref-HTTP" shape="rect">HTTP</a>][ <a href=
+          "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.41" shape="rect">14.41</a>] header are applied.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" title="Message_Validation">
+      <h2>7. <a name="Message_Validation" id="Message_Validation">Message Validation</a></h2>
+
+      <p>Validity conditions are given in this section for all protocol messages. Messages MUST satisfy all their respective
+      conditions. The conditions are presented in suggested processing order determined by their increasing computational
+      burden. The failure of any condition should immediately cause processing to terminate and the message to be
+      discarded.</p>
+
+      <div class="section" title="Initialization_Request_Validation">
+        <h3>7.1. <a name="Initialization_Request_Validation" id="Initialization_Request_Validation">Initialization Request
+        Validation</a></h3>
+
+        <p>An <a href="#Initialization_Request" shape="rect">initialization request</a> message MUST meet all the following
+        conditions to be considered valid by the responder that receives it:</p>
+
+        <ul>
+          <li>The header is well-formed according to the <a href="#Initialization_Request" shape="rect">Initialization
+          Request</a> section.</li>
+
+          <li>The <code><a href="#url" shape="rect">url</a></code> directive satisfies its equivalence condition.</li>
+
+          <li>The <a href="#dh" shape="rect"><code>dh</code></a> directive meets these conditions:
+
+            <ul>
+              <li><code>dh &gt; 1</code></li>
+
+              <li><code>dh &lt; p</code></li>
+
+              <li><code>dh ^ q MOD p = 1</code></li>
+            </ul>where <code>p</code> and <code>q</code> are from the Diffie-Hellman group indicated by the accompanying
+            <a href="#group" shape="rect"><code>group</code></a> directive.
+          </li>
+
+          <li>The <a href="#certificate" shape="rect"><code>certificate</code></a> directive, if present and if considered by
+          the responder, provides a public key that is valid according to the <a href="#Public_Key_Algorithm" shape=
+          "rect">Public Key Algorithm</a> specification, notably regarding minimum key size.</li>
+
+          <li>The <a href="#certificate" shape="rect"><code>certificate</code></a> directive, if present and if considered by
+          the responder, satisfies locally determined validation constraints, typically with respect to installed certification
+          authority root certificates.</li>
+        </ul>
+      </div>
+
+      <div class="section" title="Initialization_Response_Validation">
+        <h3>7.2. <a name="Initialization_Response_Validation" id="Initialization_Response_Validation">Initialization Response
+        Validation</a></h3>
+
+        <p>A <a href="#Initialization_Response" shape="rect">initialization response</a> message MUST meet all the following
+        conditions to be considered valid by the requester that receives it:</p>
+
+        <ol>
+          <li>The header is well-formed according to the <a href="#Initialization_Response" shape="rect">Initialization
+          Response</a> section.</li>
+
+          <li>The <a href="#dh" shape="rect"><code>dh</code></a> directive meets these conditions:
+
+            <ul>
+              <li><code>dh &gt; 1</code></li>
+
+              <li><code>dh &lt; p</code></li>
+
+              <li><code>dh ^ q MOD p = 1</code></li>
+            </ul>where <code>p</code> and <code>q</code> are from the Diffie-Hellman group indicated by the <a href="#group"
+            shape="rect"><code>group</code></a> directive in the <a href="#Initialization_Request" shape="rect">initialization
+            request</a>.
+          </li>
+
+          <li>The <a href="#certificate" shape="rect"><code>certificate</code></a> directive, if present and if considered by
+          the requester, provides a public key that is valid according to the <a href="#Public_Key_Algorithm" shape=
+          "rect">Public Key Algorithm</a> specification, notably regarding minimum key size.</li>
+
+          <li>The <a href="#certificate" shape="rect"><code>certificate</code></a> directive, if present and if considered by
+          the requester, satisfies locally determined validation constraints, typically with respect to installed certification
+          authority root certificates.</li>
+
+          <li>The <a href="#signature" shape="rect"><code>signature</code></a> directive value is valid. See <a href=
+          "#signature" shape="rect"><code>signature</code></a> section for details of the validation procedure.</li>
+        </ol>
+      </div>
+
+      <div class="section" title="Continuation_Request_Validation">
+        <h3>7.3. <a name="Continuation_Request_Validation" id="Continuation_Request_Validation">Continuation Request
+        Validation</a></h3>
+
+        <p>A <a href="#Continuation_Request" shape="rect">continuation request</a> message MUST meet all the following
+        conditions to be considered valid by the responder that receives it:</p>
+
+        <ol>
+          <li>The header is well-formed according to the <a href="#Continuation_Request" shape="rect">Continuation Request</a>
+          section.</li>
+
+          <li>The <code><a href="#token" shape="rect">token</a></code> directive references an existing shared secret
+          arrangement.</li>
+
+          <li>The <code><a href="#url" shape="rect">url</a></code> directive satisfies its equivalence condition.</li>
+
+          <li>The <code><a href="#count" shape="rect">count</a></code> directive satisfies its uniqueness conditions.</li>
+
+          <li>The <code><a href="#mac" shape="rect">mac</a></code> directive's value equals the result of the re-computation
+          over the message, using the request <a href="#MAC_Keys" shape="rect"><code>MAC key</code></a> indexed by the
+          <code><a href="#token" shape="rect">token</a></code> directive.</li>
+
+          <li>If the <code><a href="#digest" shape="rect">digest</a></code> directive is present, its value equals the result
+          of hashing the entity-body according to this specification's <a href="#Hash_Algorithm" shape="rect">Hash
+          Algorithm</a>.</li>
+        </ol>
+
+        <p>A request that fails validation SHOULD cause the responder to flush all state associated with the shared secret
+        arrangement indexed by the <code><a href="#token" shape="rect">token</a></code> directive, notably the <a href=
+        "#MAC_Keys" shape="rect">MAC keys</a> and <a href="#Cipher_Keys" shape="rect">Cipher keys</a>.</p>
+      </div>
+
+      <div class="section" title="Continuation_Response_Validation">
+        <h3>7.4. <a name="Continuation_Response_Validation" id="Continuation_Response_Validation">Continuation Response
+        Validation</a></h3>
+
+        <p>A <a href="#Continuation_Response" shape="rect">continuation response</a> message MUST meet all the following
+        conditions to be considered valid by the requester that receives it:</p>
+
+        <ol>
+          <li>The header is well-formed according to the <a href="#Continuation_Response" shape="rect">Continuation
+          Response</a> section.</li>
+
+          <li>The <code><a href="#count" shape="rect">count</a></code> directive satisfies the sequence and uniqueness
+          conditions.</li>
+
+          <li>The <code><a href="#mac" shape="rect">mac</a></code> directive's value equals the result of the re-computation
+          over the message, using the response <a href="#MAC_Keys" shape="rect">MAC key</a> indexed by the <code><a href=
+          "#token" shape="rect">token</a></code> stated in the associated request.</li>
+
+          <li>If the <code><a href="#digest" shape="rect">digest</a></code> directive is present, its value equals the result
+          of hashing the entity-body according to this specification's <a href="#Hash_Algorithm" shape="rect">Hash
+          Algorithm</a>.</li>
+        </ol>
+
+        <p>A response that fails validation SHOULD cause the requester to flush all state associated with the shared secret
+        arrangement indexed by the <code><a href="#token" shape="rect">token</a></code> directive in the associated request,
+        notably the <a href="#MAC_Keys" shape="rect">MAC keys</a> and <a href="#Cipher_Keys" shape="rect">Cipher keys</a>.</p>
+      </div>
+    </div>
+
+    <div class="section" title="Cache_Considerations">
+      <h2>8. <a name="Cache_Considerations" id="Cache_Considerations">Cache Considerations</a></h2>
+
+      <p>Implementers should be aware of how authenticated transactions interact with proxy caches. The HTTP/1.1 [<a href=
+      "#ref-HTTP" shape="rect">HTTP</a>] [ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.8" shape=
+      "rect">14.8</a>] specifies that when a shared cache has received a request containing an Authorization header and a
+      response from relaying that request, it MUST NOT return that response as a reply to any other request.</p>
+
+      <p>Note also that whereas the HTTP/1.1 specification presents three exceptions to this rule, none of these exceptions are
+      applicable to the authentication scheme here described. This is a result of the per-message uniqueness constraints
+      introduced by various protocol directives.</p>
+
+      <p>Consequently, to make the non-cacheability of messages explicit the <code>Expires</code> response header [<a href=
+      "#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21" shape=
+      "rect">14.21</a>] MUST be set by the responder to the current system clock time, during the preparation of a response's
+      "<code>WWW-Authenticate: httpsec/1.0 continue</code>" header directives. This is necessary for subsequent <a href=
+      "#Continuation_Response_Validation" shape="rect">response validation</a>, as the value of the <code>Expires</code>
+      response header features in the computation of <code><a href="#mac" shape="rect">mac</a></code> directives.</p>
+
+      <p>Also, the requirement that the <code>no-transform</code> directive [<a href="#ref-HTTP" shape="rect">HTTP</a>][
+      <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.5" shape="rect">14.9.5</a>] MUST be set in a
+      mandatory <a href="#Cache-Control" shape="rect">Cache-Control</a> response header [<a href="#ref-HTTP" shape=
+      "rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9" shape="rect">14.9</a>]
+      enforces specific modification constraints on transparent proxies that apply to certain headers - see [<a href=
+      "#ref-HTTP" shape="rect">HTTP</a>][ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.5.2" shape=
+      "rect">13.5.2</a>].</p>
+    </div>
+
+    <div class="section" title="Security_Considerations">
+      <h2>9. <a name="Security_Considerations" id="Security_Considerations">Security Considerations</a></h2>
+
+      <p>This entire specification discusses a secure authentication system that protects HTTP messages transmitted across an
+      untrusted network.</p>
+    </div>
+
+    <div class="section" title="References">
+      <h2>10. <a name="References" id="References">References</a></h2>
+
+      <p>Normative references:</p>
+
+      <dl>
+        <dt><a id="ref-AES" name="ref-AES" shape="rect">AES</a></dt>
+
+        <dd><a href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf" shape="rect">FIPS 197</a>. <em>Specification
+        for the Advanced Encryption Standard (AES)</em> National Institute of Standards and Technology. November 2001.<br />
+        <a href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf" shape=
+        "rect">http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf</a></dd>
+
+        <dt><a id="ref-CBC" name="ref-CBC" shape="rect">CBC</a></dt>
+
+        <dd><a href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" shape="rect">SP 800-38A</a>.
+        <em>Recommendation for Block Cipher Modes of Operation.</em> Morris Dworkin. December 2001.<br />
+        <a href="http://csrc.nist.gov/publications/nistpubs/800-38C/SP800-38C.pdf" shape=
+        "rect">http://csrc.nist.gov/publications/nistpubs/800-38C/SP800-38C.pdf</a></dd>
+
+        <dt><a id="ref-DATA" name="ref-DATA" shape="rect">DATA</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2397.txt" shape="rect">RFC 2397</a>. <em>The "data" URL scheme.</em> L.
+        Masinter. August 1998.<br />
+        <a href="http://www.ietf.org/rfc/rfc2397.txt" shape="rect">http://www.ietf.org/rfc/rfc2397.txt</a></dd>
+
+        <dt><a id="ref-HMAC" name="ref-HMAC" shape="rect">HMAC</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2104.txt" shape="rect">RFC 2104</a>. <em>HMAC: Keyed-Hashing for Message
+        Authentication.</em> H. Krawczyk, M. Bellare, R. Canetti. February 1997.<br />
+        <a href="http://www.ietf.org/rfc/rfc2104.txt" shape="rect">http://www.ietf.org/rfc/rfc2104.txt</a></dd>
+
+        <dt><a id="ref-HTTP" name="ref-HTTP" shape="rect">HTTP</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2616.txt" shape="rect">RFC 2616</a>. <em>Hypertext Transfer Protocol --
+        HTTP/1.1</em>. J. Gettys, J. Mogul, H. Frystyk, L. Masinter, P. Leach, T. Berners-Lee. June 1999.<br />
+        <a href="http://www.ietf.org/rfc/rfc2616.txt" shape="rect">http://www.ietf.org/rfc/rfc2616.txt</a></dd>
+
+        <dt><a id="ref-HTTP-Authentication" name="ref-HTTP-Authentication" shape="rect">HTTP Authentication</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2617.txt" shape="rect">RFC 2617</a>. <em>HTTP Authentication: Basic and Digest
+        Access Authentication</em>. J. Franks, P. Hallam-Baker, J. Hostetler, S. Lawrence, P. Leach, A. Luotonen, L. Stewart.
+        June 1999<br />
+        <a href="http://www.ietf.org/rfc/rfc2617.txt" shape="rect">http://www.ietf.org/rfc/rfc2617.txt</a></dd>
+
+        <dt><a id="ref-KEYWORDS" name="ref-KEYWORDS" shape="rect">KEYWORDS</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2119.txt" shape="rect">RFC 2119.</a> <em>Key words for use in RFCs to Indicate
+        Requirement Levels.</em> S. Bradner. March 1997.<br />
+        <a href="http://www.ietf.org/rfc/rfc2119.txt" shape="rect">http://www.ietf.org/rfc/rfc2119.txt</a></dd>
+
+        <dt><a id="ref-MODP" name="ref-MODP" shape="rect">MODP</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc3526.txt" shape="rect">RFC 3526</a>. <em>More Modular Exponential (MODP)
+        Diffie-Hellman groups for Internet Key Exchange (IKE)</em><br />
+        <a href="http://www.ietf.org/rfc/rfc3526.txt" shape="rect">http://www.ietf.org/rfc/rfc3526.txt</a></dd>
+
+        <dt><a id="ref-PKCS1" name="ref-PKCS1" shape="rect">PKCS#1</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2437.txt" shape="rect">PKCS #1 v2.1</a>. <em>PKCS #1 v2.1: RSA Cryptography
+        Standard.</em><br />
+        <a href="ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-1/pkcs-1v2-1.pdf" shape=
+        "rect">ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-1/pkcs-1v2-1.pdf</a></dd>
+
+        <dt><a id="ref-PKCS5" name="ref-PKCS5" shape="rect">PKCS#5</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2898.txt" shape="rect">PKCS #5 v2.0</a>. <em>PKCS #5 v2.0 Password-Based
+        Cryptography Standard</em><br />
+        <a href="ftp://ftp.rsasecurity.com/pub/pkcs/ascii/pkcs-6.asc" shape=
+        "rect">ftp://ftp.rsasecurity.com/pub/pkcs/ascii/pkcs-6.asc</a></dd>
+
+        <dt><a id="ref-SHA" name="ref-SHA" shape="rect">SHA</a></dt>
+
+        <dd><a href="http://csrc.nist.gov/publications/fips/fips180-2/fips180-2withchangenotice.pdf" shape="rect">FIPS PUB
+        180-2</a>. <em>Secure Hash Standard.</em><br />
+        <a href="http://csrc.nist.gov/publications/fips/fips180-2/fips180-2withchangenotice.pdf" shape=
+        "rect">http://csrc.nist.gov/publications/fips/fips180-2/fips180-2withchangenotice.pdf</a></dd>
+
+        <dt><a id="ref-URI" name="ref-URI" shape="rect">URI</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc3986.txt" shape="rect">RFC 3986</a>. <em>Uniform Resource Identifiers (URI):
+        Generic Syntax.</em> T. Berners-Lee, R. Fielding, L. Masinter. August 1998.<br />
+        <a href="http://www.ietf.org/rfc/rfc3986.txt" shape="rect">http://www.ietf.org/rfc/rfc2396.txt</a></dd>
+
+        <dt><a id="ref-URL" name="ref-URL" shape="rect">URL</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc1738.txt" shape="rect">RFC 1738.</a> <em>Uniform Resource Locators (URL).</em>
+        T. Berners-Lee, L. Masinter, and M. McCahill. December 1994.<br />
+        <a href="http://www.ietf.org/rfc/rfc1738.txt" shape="rect">http://www.ietf.org/rfc/rfc1738.txt</a></dd>
+
+        <dt><a id="ref-X509" name="ref-X509" shape="rect">X509</a></dt>
+
+        <dd><a href="http://www.ietf.org/rfc/rfc2459.txt" shape="rect">RFC 2459.</a> <em>Internet X.509 Public Key
+        Infrastructure Certificate and CRL Profile.</em> R. Housley, W. Ford, W. Polk, D. Solo<br />
+        <a href="http://www.ietf.org/rfc/rfc2459.txt" shape="rect">http://www.ietf.org/rfc/rfc2459.txt</a></dd>
+      </dl>
+    </div>
+
+    <div class="section" title="Editor_Address">
+      <h2>11. <a name="Editor_Address" id="Editor_Address">Editor Address</a></h2>
+
+      <p>Stephan Fowler<br />
+      <a href="http://secarta.com/">secarta.com</a><br />
+      Ferroners' House<br />
+      Shaftesbury Place<br />
+      London EC2Y 8AA<br />
+      T +44 20 7796 2527<br />
+      F +44 20 7796 3539</p>
+
+      <p>Email: stephan.fowler<!-- -->@<!-- -->secarta.com</p>
+    </div>
+  </div><!-- ###_FOOTER_START_### -->
+
+  <div class="footer">
+    &copy; Secarta. All rights reserved.<br />
+  </div><!-- ###_FOOTER_START_### -->
+<<<<<<< HEAD
+
+=======
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+  _uacct = "UA-879341-1";
+  urchinTracker();
+  </script>
+>>>>>>> Changed links so the file can stand alone.
+</body>
+</html>
