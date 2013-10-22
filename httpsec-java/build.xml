@@ -1,0 +1,111 @@
+<project name="httpsec-java" default="dist" basedir=".">
+    <description>HTTPsec-Java 1.0</description>
+    
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="docs" location="docs"/>
+    <property name="version" value="1.0"/>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <!--
+    <target name="compile" depends="init" description="compile from source">
+        <javac srcdir="${src}" destdir="${build}" debug="true">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <fileset dir="lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="javadoc" depends="compile" description="make javadocs">
+        <mkdir dir="${docs}/javadocs"/>
+        <javadoc sourcepath="${src}/java" destdir="${docs}/javadocs" packagenames="com.secarta.httpsec.*" WindowTitle="HTTPsec-java">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <fileset dir="lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="dist" depends="javadoc" description="generate distribution">
+        <jar jarfile="${dist}/httpsec.jar" basedir="${build}">
+            <exclude name="org/httpsec/tools/*"/>
+        </jar>
+        <jar jarfile="${dist}/httpsec-tools.jar" basedir="${build}" manifest="${src}/conf/tools-manifest.mf" index="false">
+            <include name="org/httpsec/tools/*"/>
+        </jar>
+        <copy todir="${dist}/web" overwrite="true">
+            <fileset dir="web"/>
+        </copy>
+        <copy file="${src}/conf/Primitives.conf" todir="${dist}"/>
+        <copy file="${src}/conf/Primitives.conf" todir="${dist}/web/WEB-INF"/>
+        <copy file="${dist}/httpsec.jar" todir="${dist}/web/WEB-INF/lib" overwrite="true"/>
+    </target>
+    -->
+    
+    <target name="compile" depends="init" description="compile">
+        <javac srcdir="${src}" destdir="${build}" debug="true">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <fileset dir="lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="javadoc" description="make javadocs">
+        <delete dir="${docs}/javadocs"/>
+        <mkdir dir="${docs}/javadocs"/>
+        <javadoc sourcepath="${src}/java" destdir="${docs}/javadocs" packagenames="com.secarta.httpsec.*" WindowTitle="HTTPsec-Java">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <fileset dir="lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="build" depends="compile,javadoc" description="compile and javadoc">
+        <jar jarfile="${build}/httpsec.jar" basedir="${build}">
+            <exclude name="com/secarta/httpsec/tools/*"/>
+            <exclude name="com/secarta/httpsec/web/*"/>
+        </jar>
+        <jar jarfile="${build}/httpsec-tools.jar" basedir="${build}" manifest="${src}/conf/tools-manifest.mf" index="false">
+            <include name="com/secarta/httpsec/tools/*"/>
+        </jar>
+        <copy file="${src}/conf/Primitives.conf" todir="${build}"/>
+        <copy todir="${build}/web" overwrite="true">
+            <fileset dir="web"/>
+        </copy>
+        <copy file="${src}/conf/Primitives.conf" todir="${build}/web/WEB-INF/classes"/>
+        <copy file="${build}/httpsec.jar" todir="${build}/web/WEB-INF/lib"/>
+        <copy todir="${build}/docs">
+            <fileset dir="docs"/>
+        </copy>
+        <delete dir="${build}/com"/>
+        
+    </target>
+
+    <target name="dist" depends="build" description="generate distribution">
+        <tar tarfile="${dist}/httpsec-java-${version}.tar" basedir="${build}"/>
+        <gzip zipfile="${dist}/httpsec-java-${version}.tar.gz" src="${dist}/httpsec-java-${version}.tar"/>
+        <zip destfile="${dist}/httpsec-java-${version}.zip" basedir="${build}" compress="true"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+</project>

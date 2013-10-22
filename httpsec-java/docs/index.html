@@ -1,0 +1,713 @@
+<html>
+    <head>
+        <style>
+            blockquote { margin: 0em 1em 1em 1em; padding: 1em; border: dotted 1px #ddd; background: #fafafa; }
+            blockquote blockquote { border: none; }
+            hr { border: none; border-bottom: solid 1px #ddd; height: 0px; background: #ddd; }
+            dl { padding-left: 2em; }
+            dt { font-weight: bold; }
+
+            /* xh2 annotated xml */
+            
+            .x2h { font-family: monospace; margin: 0em 0em 0em -2em; }
+            .x2h .comment { font-family: sans-serif; display: block; padding: 0; margin: 1em 0em 0em 2em; }
+            .x2h .comment .delimiter { color: #ccc; display: block; }
+            .x2h .content { font-weight: bold; display: inline; }
+            .x2h .element { padding: 0; margin: 0em 0em 0em 2em; }
+            .x2h .element .name { }
+            .x2h .pi { padding: 0; margin: 0em 0em 0em 2em; display: inline; color: #ccc; }
+        </style>
+        <title>HTTPsec-Java documentation</title>
+    </head>
+    <body>
+        <h1>HTTPsec-Java</h1>
+        <p>
+            HTTPsec-Java is an implementation of the <a href="http://httpsec.org/">HTTPsec/1.0 specification</a> in Java.
+        </p>
+        <p>
+            HTTPsec-Java includes a wrapper for <code>java.net.HttpURLConnection</code> that adds HTTPsec authentication to client applications and a servlet filter that can add HTTPsec authentication to any servlet webapp.
+        </p>
+
+        <hr>
+        <a name="index"></a>
+        <h2>Index</h2>
+        <ol>
+            <li><a href="#package-contents">Package Contents</a></li>
+            <li><a href="#requirements">System Requirements</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li>
+                <a href="#usage">Usage</a>
+                <ol>
+                    <li><a href="#usage.test">A Quick Test</a></li>
+                    <li><a href="#usage.client">Client</a></li>
+                    <li><a href="#usage.filter">Servlet Filter</a></li>
+                </ol>    
+            </li>
+            <li><a href="javadocs/index.html">javadocs</a></li>
+            <li>
+                <a href="#jce">JCE Configuration</a>
+                <ol>
+                    <li><a href="#jce.quick">The Quick Way That Always Works</a></li>
+                    <li><a href="#jce.other">The Other Way</a></li>
+                </ol>
+            </li>
+            <li><a href="#certificates">Certificates</a></li>
+            <li><a href="#performance">Performance Considerations</a></li>
+            <li><a href="#issues">Known Issues</a></li>
+            <li><a href="#legal">Legal Note</a></li>
+            <li><a href="#links">Links</a></li>
+        </ol>
+        <hr>
+    
+        <a name="package-contents"></a>
+        <h2>Package Contents</h2>
+        <table>
+            <tr>
+                <td><code>httpsec.jar</code></td>
+                <td>The HTTPsec-Java library. </td>
+            </tr>
+            <tr>
+                <td><code>httpsec-tools.jar</code></td>
+                <td>Command line tools. </td>
+            </tr>
+            <tr>
+                <td><code>web/</code></td>
+                <td>Sample webapp</td>
+            </tr>
+            <tr>
+                <td><code>docs/</code></td>
+                <td>Documentation</td>
+            </tr>
+        </table>
+        
+
+        <br><a href="#index">index</a><br>
+        <a name="requirements"></a>
+        <h2>System Requirements</h2>
+        <ol>
+            <li>
+                <a href="http://java.sun.com/">Java</a> 1.5 or later</a>
+            </li>
+            <li>
+                A compatible Java Cryptography Extension ( "JCE" ) provider. <a href="jce.html">JCE Configuration</a> docs for more details.
+            </li>
+            <li>
+                <a href="http://java.sun.com/j2se/1.4.2/download.html#docs">Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files 1.4.2</a>
+            </li>
+            <li>
+                The <a href="javadocs/com/secarta/httpsec/tools/package-summary.html">com.secarta.httpsec.tools</a> package ( in <code>httpsec-tools.jar</code> ) requires the <a href="http://bouncycastle.org/">Bouncy Castle</a> libraries.
+            </li>
+        </ol>
+
+        <br><a href="#index">index</a><br>
+        <a name="installation"></a>
+        <h2>Installation</h2>
+        <ol>
+            <li>
+                <h3>Client / Command-line tools</h3>
+                <p>Include <code>httpsec.jar</code> in your classpath.</p>
+                <p>If you are using the <a href="javadocs/com/secarta/httpsec/tools/package-summary.html">com.secarta.httpsec.tools</a> package include <code>httpsec-tools.jar</code>.</p>
+            </li>
+            <li>
+                <h3>Sample Webapp</h3>
+                <p>Copy the <code>web/</code> directory of the distribution to your servlet containers <code>webapps/</code> directory.</p>
+            <li>
+                <h3>Servlet Filter</h3>
+                <p>Copy <code>httpsec.jar</code> to your webapps <code>WEB-INF/lib/</code> directory. Use the sample <code>web.xml</code> from the sample webapp as a guide to edit your <code>web.xml</code>.</p>
+            </li>
+        </ol>
+    
+        <br><a href="#index">index</a><br>
+        <a name="usage"></a>
+        
+        <h2>Usage</h2>
+        <h4>Note:</h4>
+        <p>
+            You must configure the Java Cryptography Extension ( JCE ) before these examples will work.
+            Unless you have <a href="#jce.other">specfic JCE configuration requirements</a> try
+            <a href="#jce.quick">The Quick Method That Always Works</a>.
+        </p>
+        <a name="usage.test"></a>
+        <h3>A Quick Test</h3>
+        <p>
+            Make simple http "GET" request to the HTTPsec test server at <a href="http://server3.clinksystems.com:8080/httpsec/">http://server3.clinksystems.com:8080/httpsec/</a>
+            The test servlet "echo" will return our request in the response body ( in the manner of the
+            http method "TRACE" ).
+        </p>
+        <blockquote>
+            <code>
+                java -jar httpsec-tools.jar client -id test http://server3.clinksystems.com:8080/httpsec/echo
+            </code>
+        </blockquote>
+        <p>
+            Should produce output like this:
+        </p>
+        <blockquote>
+            <code>
+                no private key specified - creating a self-signed CA...<br>
+                local principal: test#aa4242443a3c4445e2af5a8b29077835b6f3b532491f19f97398991cbefa3a44<br>
+                remote principal: httpsec_sample_webapp#c9a7f07c16f7dd04f2e735dff616a9b6fe575d5a50d4a0c80faf2368ce8f7b89<br>
+                <br>
+                200 OK<br>
+                Server: Apache-Coyote/1.1<br>
+                Content-Encoding: x-httpsec/1.0-cipher<br>
+                Expires: Thu, 26 Oct 2006 10:49:37 GMT<br>
+                Cache-Control: no-transform<br>
+                WWW-Authenticate: httpsec/1.0 continue; count=2; mac=AUatMW+yNuSW24MFYgjfuVaJ5hxUDI6gc7IQ0PTcSFk=; digest=P+ziUUKo6rkKjtYUdmDQxHI/PNyO5gb2RWIpXjVIoy8=<br>
+                Content-Type: message/http<br>
+                Content-Length: 496<br>
+                Date: Thu, 26 Oct 2006 10:49:37 GMT<br>
+                <br>
+                HTTP/1.1 GET /httpsec/echo<br>
+                accept-encoding: x-httpsec/1.0-cipher<br>
+                authorization: httpsec/1.0 continue; count=1; mac=b3nxfxuolaiNKWRjfKFOq/9B4JTR9++aPVHds+aMBrM=; digest=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=; url=http://server3.clinksystems.com:8080/httpsec/echo; token=/UV1euebPt8=<br>
+                user-agent: Java/1.5.0_04<br>
+                host: server3.clinksystems.com:8080<br>
+                accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2<br>
+                connection: keep-alive<br>
+                content-type: application/x-www-form-urlencoded<br>
+            </code>
+        </blockquote>
+
+        <a name="usage.client"></a>
+        <h3>Client</h3>
+        <p>
+            Import the HTTPsec-Java classes:
+        </p>
+        <blockquote>
+            <code>
+                import com.secarta.httpsec.HttpsecException;<br>
+                import com.secarta.httpsec.HttpsecURLConnection;<br>
+                import com.secarta.httpsec.HttpsecURLConnectionFactory;
+            </code>
+        </blockquote>
+        <p>
+            Choose an id for the local principal or "requester":
+        <p>
+        <blockquote>
+            <code>
+                String id = "test";
+            </code>
+        </blockquote>
+        <p>
+            We need a certificate url and a private key. We could use the url of a certificate we've published on
+            the a web server and load a private key from a file. This time we'll create a self-signed certificate
+            authority that contains a certificate and private key.
+        </p>
+        <blockquote>
+            <code>
+                com.secarta.httpsec.tools.tools.CA ca = new com.secarta.httpsec.tools.CA( id );
+            </code>
+        </blockquote>
+        <p>
+            Then we'll initialize an <a href="javadocs/com/secarta/httpsec/net/HttpsecURLConnectionFactory.html">HttpsecURLConnectionFactory</a> with the id, certificate and private key:
+        </p>
+        <blockquote>
+            <code>
+                HttpsecURLConnectionFactory cf = new HttpsecURLConnectionFactory(<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;id,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ca.getCertificate(),<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ca.getPrivateKey<br>
+                );
+            </code>
+        </blockquote>
+        <p>
+            Now we'll create an ordinary java.net.HttpURLConnection:
+        </p>
+        <blockquote>
+            <code>
+                HttpURLConnection c = ( HttpURLConnection )new URL(<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"http://server3.clinksystems.com:8080/httpsec/echo"<br>
+                );
+            </code>
+        </blockquote>
+        <p>
+            Then we'll use the HttpsecURLConnectionFactory to wrap it and add HTTPsec authentication:
+        </p>
+        <blockquote>
+            <code>
+                HttpsecURLConnection hc = cf.wrap( c );
+            </code>
+        </blockquote>
+        <p>
+            We can use the <a href="javadocs/com/secarta/httpsec/net/HttpsecURLConnection.html">HttpsecURLConnection</a>
+            just like an ordinary java.net.HttpURLConnection:
+        </p>
+        <blockquote>
+            <code>
+                try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;hc.setRequestMethod( "POST" );<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;hc.setRequestProperty( "Content-Type", "text/plain; charset=utf-8" );<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;hc.setDoOutput( true );<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;hc.getOutputStream().write( "hello world".getBytes() );<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;System.out.println( hc.getResponseCode() + " " + hc.getResponseMessage() );<br>
+                } catch ( IOException e ) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// handle exceptions<br>
+                } finally {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;hc.close();<br>
+                }
+            </code>
+        </blockquote>
+        <p>
+            Note the <code> finally { hc.close(); }</code> block. HTTPsec-Java might create a temporary file to
+            buffer large messages. Calling HttpsecURLConnection.close() in a "finally" block ensures that if a file
+            has been created it will be deleted regardless of whether exceptions are thrown.
+        </p>
+        <p>
+            <a href="javadocs/com/secarta/httpsec/net/HttpsecURLConnection.html">HttpsecURLConnection</a> reports the
+            remote principal or "responder" as an <a href="javadocs/com/secarta/httpsec/HttpsecPrincipal.html">HttpsecPrincipal</a> object:
+        </p>
+        <blockquote>
+            <code>
+                HttpsecPrincipal p = hc.getPrincipal();<br>
+                System.out.println( p );<br>
+                <br>&gt;&nbsp;httpsec_sample_webapp#c9a7f07c16f7dd04f2e735dff616a9b6fe575d5a50d4a0c80faf2368ce8f7b89<br><br>
+                System.out.printnln( p.getID() );<br>
+                <br>&gt; httpsec_sample_webapp<br><br>
+                System.out.println( p.getFingerprint() );<br>
+                <br>&gt; c9a7f07c16f7dd04f2e735dff616a9b6fe575d5a50d4a0c80faf2368ce8f7b89<br><br>
+            </code>
+        </blockquote>
+
+        <a name="usage.filter"></a>
+        <h3>Servlet Filter</h3>
+        <p>
+            Here is an annotated version of the <code>web.xml</code> from the sample webapp.
+        </p>
+        <!-- -->
+        <blockquote>
+<div class="x2h"><div class="pi">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</div>
+<div class="element">&lt;<span class="name">web-app</span> xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4"&gt;
+    
+    <div class="comment"><span class="delimiter">&lt;!--</span>
+        This filter does httpsec/1.0 authentication.
+        see the javadocs for com.secarta.httpsec.servlet.HttpsecFilter for more info.
+    <span class="delimiter">--&gt;</span></div>
+    <div class="element">&lt;<span class="name">filter</span>&gt;
+        <div class="element">&lt;<span class="name">filter-name</span>&gt;<div class="content">httpsec</div>&lt;/<span class="name">filter-name</span>&gt;</div>
+        <div class="element">&lt;<span class="name">filter-class</span>&gt;<div class="content">com.secarta.httpsec.servlet.HttpsecFilter</div>&lt;/<span class="name">filter-class</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Out of the box the filter only supports a single local identity.
+            This is what appears in the "id" field of challenge and initialize headers.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">local-id</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">httpsec_sample_webapp</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            The filename of the private key associated with local-id.
+            For obvious reasons you must make sure this is not accessible from the web.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">private-key</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">WEB-INF/httpsec_sample_webapp.key</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            The url of the certificate associated with local-id.
+            This url must be accessible from the web.
+
+            See the httpsec documentation for more about how to communicate your certificate to other users.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">certificate</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">http://secarta.com/products/httpsec-java/httpsec_sample_webapp.cert</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            If set to "yes" ( or "true" ) the filter will send a 401 Authorization Required response
+            with an httpsec/1.0 challenge header.
+            to unauthenticated requests. Otherwise it will ignore them.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">challenge</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">yes</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Should the filter expect a valid digest with each authenticated request.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">request-digest</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">yes</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Should the filter add a digest to authenticated responses.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">response-digest</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">yes</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Should the filter cipher responses for clients that have sent
+            Accept-Encoding: x-httpsec/1.0-cipher
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">cipher</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">yes</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Delete httpsec sessions ( *NOT* servlet sessions ) that have not been used for
+            this many milliseconds.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">session-timeout</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">600000</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            The filter will examine it's table of sessions every so many milliseconds and
+            delete expired sessions.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">session-cleanup</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">60000</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+        <div class="comment"><span class="delimiter">&lt;!--</span>
+            Log filter activity.
+        <span class="delimiter">--&gt;</span></div>
+        <div class="element">&lt;<span class="name">init-param</span>&gt;
+            <div class="element">&lt;<span class="name">param-name</span>&gt;<div class="content">verbose</div>&lt;/<span class="name">param-name</span>&gt;</div>
+            <div class="element">&lt;<span class="name">param-value</span>&gt;<div class="content">yes</div>&lt;/<span class="name">param-value</span>&gt;</div>
+        &lt;/<span class="name">init-param</span>&gt;</div>
+
+    &lt;/<span class="name">filter</span>&gt;</div>
+
+
+    <div class="comment"><span class="delimiter">&lt;!--</span>
+        This servlet returns the request it receives as message/http in the manner of
+        the http TRACE method.
+    <span class="delimiter">--&gt;</span></div>
+    <div class="element">&lt;<span class="name">servlet</span>&gt;
+        <div class="element">&lt;<span class="name">servlet-name</span>&gt;<div class="content">echo</div>&lt;/<span class="name">servlet-name</span>&gt;</div>
+        <div class="element">&lt;<span class="name">servlet-class</span>&gt;<div class="content">com.secarta.httpsec.servlet.Echo</div>&lt;/<span class="name">servlet-class</span>&gt;</div>
+    &lt;/<span class="name">servlet</span>&gt;</div>
+
+    <div class="element">&lt;<span class="name">servlet-mapping</span>&gt;
+        <div class="element">&lt;<span class="name">servlet-name</span>&gt;<div class="content">echo</div>&lt;/<span class="name">servlet-name</span>&gt;</div>
+        <div class="element">&lt;<span class="name">url-pattern</span>&gt;<div class="content">/echo</div>&lt;/<span class="name">url-pattern</span>&gt;</div>
+    &lt;/<span class="name">servlet-mapping</span>&gt;</div>
+
+    <div class="element">&lt;<span class="name">filter-mapping</span>&gt;
+        <div class="element">&lt;<span class="name">filter-name</span>&gt;<div class="content">httpsec</div>&lt;/<span class="name">filter-name</span>&gt;</div>
+        <div class="element">&lt;<span class="name">servlet-name</span>&gt;<div class="content">echo</div>&lt;/<span class="name">servlet-name</span>&gt;</div>
+    &lt;/<span class="name">filter-mapping</span>&gt;</div>
+    
+    
+
+&lt;/<span class="name">web-app</span>&gt;</div>
+</div>
+        </blockquote>
+        <!-- -->
+        
+
+
+        <br><a href="#index">index</a><br>
+        <a name="jce"></a>
+        <h2>JCE Configuration</h2>
+        <p>
+            This section is about how to configure the <a href="http://java.sun.com/products/jce/">Java Cryptography Environment</a> ( "JCE" ) to work with HTTPsec-Java and how to configure HTTPsec-Java to work with the JCE.
+        </p>
+        <p>
+            If you are unfamilliar with the JCE <a href="http://java.sun.com/j2se/1.4.2/docs/guide/security/jce/JCERefGuide.html">this</a> might help.
+        </p>
+        <p>
+            You MUST install the <a href="http://java.sun.com/j2se/1.4.2/download.html#docs">Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files 1.4.2</a>. Sun has to cripple its crypto libraries to export them legally. These "policy files" de-restrict them.
+        </p>
+
+        <a name="jce.quick"></a>
+        <h3>The Quick Way That Always Works</h3>
+        <p>
+            Do not touch <code>Primitives.conf</code>
+        </p>
+        <p>
+            Download the provider package from the <a href="http://bouncycastle.org/">Legion of the Bouncy Castle</a>.
+        </p>
+        <p>
+            For client applications put it in the same directory as <code>httpsec.jar</code> and, if you're using it
+            <code>httpsec-tools.jar</code>.
+        </p>
+        <p>
+            For servlet applications ( with Apache Tomcat anyway ) you can't put the provider library in
+            your webapps <code>WEB-INF/lib/</code> directory because if you do the webapp will refuse to reload.
+            Instead put it in your servlet containers common libs directory ( <code>$TOMCAT/common/lib/</code> with
+            Tomcat ).
+        </p>
+
+        <a name="jce.other"></a>
+        <h3>The Other Way</h3>
+        <p>
+            If you have a more complicated application, or you want to use another provider,
+            or a combination of providers you might need to make some changes to <code>Primitives.conf</code>
+            to make HTTPsec-Java work for your application.
+        </p>
+        <p>
+            <code>Primitives.conf</code> is a java properties file which should be included at the bottom level of
+            the classpath where <code>httpsec.jar</code> is installed.
+        </p>
+        <h4>Loading Providers</h4>
+        <p>
+            The first entry in <code>Primitives.conf</code> is a space-separated list of JCE provider classes
+            that HTTPsec-Java will attempt to install.
+            <blockquote>
+                <code>
+                    providers = org.bouncycastle.jce.provider.BouncyCastleProvider:2 com.rsa.jsafe.provider.JsafeJCE
+                </code>
+            </blockquote>
+            Each provider in the list can have an optional index after a colon at the end:
+            <blockquote>
+                <code>
+                    ...BouncyCastleProvider<b>:2</b>
+                </code>
+            </blockquote>
+            Which if present will make HTTPsec-Java use
+            <code>java.security.Security.insertProviderAt( provider, index )</code>
+            rather than the default
+            <code>java.security.Security.addProvider( provider )</code>.
+        </p>
+        <p>
+            If a provider class cannot be found HTTPsec-Java will print a warning, but not fail.
+            If any exception happens whilst instantiating the provider HTTPsec-Java will fail with a
+            <code>java.lang.IllegalStateException</code>.
+        </p>
+
+        <h4>Mapping Algorithm Names</h4>
+        <p>
+            HTTPsec-Java uses symbolic names to map JCE algorithm names to it's cryptographic services.
+            <code>Primitives.conf</code> allows you to override the defaults.
+        <p>
+        <p>
+            The following properties are shown with their default values.
+        </p>
+        <blockquote>
+            <code>
+                <pre>Hash                = SHA-256
+Hmac                = HmacSHA256
+PublicKeyCipher     = RSA/NONE/OAEPwithSHA1andMGF1padding
+BlockCipher         = AES/ECB/NoPadding
+StreamCipher        = AES/CBC/PKCS5padding
+PublicKeyGenerator  = RSA
+PublicKeyFactory    = RSA
+DHGenerator         = DiffieHellman
+DHAgreement         = DiffieHellman
+CertificateFactory  = X.509
+Signature           = SHA256withRSAandMGf1
+SecureRandom        = SHA1PRNG</pre>
+            </code>
+        </blockquote>
+        <p>
+            Note that you can completely mess up HTTPsec-Java by substituting different algorithms.
+        </p>
+        
+        <h4>Using a Specific Provider</h4>
+        <p>
+            For each of the above properties you can also specify a provider. For example:
+            <blockquote>
+                <code>
+                    BlockCipher<b>.provider</b> = BC
+                </code>
+            </blockquote>
+            Would force HTTPsec-Java to use the Bouncy Castle ( BC ) provider to create
+            <code>java.security.Cipher</code> instances using the BlockCipher algorithm.
+        </p>
+        <p>
+            By default HTTPsec-Java uses whatever provider provides the algorithm it's after.
+        </p>
+
+        <h4>Default Diffie-Hellman Parameters</h4>
+        <p>
+            The HTTPsec specification defines <a href="http://httpsec.org/#group">Diffie-Hellman parameter groups ( MODP groups )</a> that implementations must support. You can use <code>Primitives.conf</code> to set the default MODP group that HTTPsec-Java uses.
+        </p>
+        <blockquote>
+            <code>
+                DHGroup = rfc3526#14
+            </code>
+        </blockquote>
+
+        <br><a href="#index">index</a><br>
+        <a name="certificates"></a>
+        <h2>Certificates</h2>
+        <p>
+            HTTPsec uses <a href="http://en.wikipedia.org/wiki/X.509">X.509</a> certificates. For many applications self-signed certificates are useful.
+            The sample webapp contains a test <a href="http://secarta.com/products/httpsec-java/httpsec_sample_webapp.cert">certificate</a> and <a href="http://secarta.com/products/httpsec-java/httpsec_sample_webapp.key">private key</a>.
+        </p>
+        <p>
+            To generate a self-signed certificate and private key ( a "certificate authority" ) first define the <a href="http://httpsec.org/#Peer_Identifiers">HTTPsec "peer identifier"</a> to use:
+            <blockquote>
+                <code>
+                    ID=test
+                </code>
+            </blockquote>
+        </p>
+        <p>
+            To create the certificate authority with HTTPsec-Java do:
+            <blockquote>
+                <code>
+                    java -jar httpsec-tools.jar ca -cert <i>certificate.pem</i> -private <i>private.pem</i> $ID
+                </code>
+            </blockquote>
+        </p>
+        <p>
+            Alternatively you can generate the certificate authority with openssl:
+            <blockquote>
+                <code>
+                    openssl genrsa 2048 &gt; test.key<br>
+                    openssl req -new -x509 -nodes -sha1 -days 365 -key test.key -subj "/CN=$ID" &gt; <i>certificate.pem</i><br>
+                    openssl pkcs8 -nocrypt -topk8 &lt; test.key &gt; <i>private.pem</i>
+                </code>
+            </blockquote>
+        </p>
+        <p>
+            You can use openssl to view the contents of a certificate by using the command:
+            <blockquote>
+                <code>
+                    openssl x509 -text -noout &lt; <i>certificate.pem</i>
+                </code>
+            </blockquote>
+        </p>
+        
+        <p>
+            The HTTPsec specification defines <a href="http://httpsec.org/#certificate">several</a> ways to communicate certificates. The simplest is to publish <code><i>certificate.pem</i></code> on a web server.
+        </p>
+        <p>
+            The private key <code><i>private.pem</i></code> should always be stored somewhere that is not accessible via external http.
+        </p>
+
+        <br><a href="#index">index</a><br>
+        <a name="performance"></a>
+        <h2>Performance Considerations</h2>
+        <p>
+            Using HTTPsec in your application adds overheads and constraints to its ordinary http conversations.
+        </p>
+        <ol>
+            <li>
+                <h3>Caching</h3>
+                <p>
+                    Messages authenticated with HTTPsec are <a href="http://httpsec.org/#Cache_Considerations">not cachable</a>. 
+                </p>
+            </li>
+            <li>
+                <h3>Extra Messages</h3>
+                <p>
+                    Initializing an HTTPsec session involves an extra request / response exchange. Both peers may need to make a subsequent database / http request to locate a certificate for the other.
+                </p>
+            </li>
+            <li>
+                <h3>Generating Message Digests</h3>
+                <p>
+                    The http protocol allows for messages of arbitrary length with the end of the message delimited
+                    by the sender closing the stream ( <code>Connection: close</code> ) or by sending a final chunk
+                    ( <code>Transfer-Encoding: chunked</code> ).
+                </p>
+                <p>
+                    This, in combination with HTTPsec message digests can lead to an arbitrarily long wait as
+                    the receiver has to reach the end of the message to calculate the message digest.
+                </p>
+                <p>
+                    Both client and server components of HTTPsec-Java allow the user to switch off message digest
+                    processing at the expense of establishing message integrity.
+                </p>
+            </li>
+            <li>
+                <h3>Cryptographic Algorithm Performance</h3>
+                <p>
+                    Cryptographic algorithm performance in Java is not as predictable as native implementations.
+                    Alright, it's crap. Then again no sometimes it's not. It will depend on which provider
+                    you use for which algorithm.
+                </p>
+            </li>
+        </ol>
+ 
+        <br><a href="#index">index</a><br>
+        <a name="issues"></a>
+        <h2>Known Issues</h2>
+        <ol>
+            <li>
+                <h3><code>certificate=this:entity-body</code> not supported</h3>
+                <p>
+                    This version of HTTPsec-Java does not recognise the <code>this:entity-body</code> URI in
+                    the "certificate" field of initialize headers.
+                    If a peer receives a message with the certificate specified like this it will be unable to
+                    retrieve the certificate and will fail.
+                </p>
+            </li>
+            <li>
+                <h3>No "certificate" field in challenge headers</h3>
+                <p>
+                    The optional <code>certificate=...</code> field is never sent in <a href="http://httpsec.org/#Challenge_Messages">challenge responses</a>.
+                    Since the field is optional this has no effect on protocol operation.
+                </p>
+            </li>
+            <li>
+                <h3>Sharing private keys with openssl</h3>
+                <p>
+                    The default formats for private keys produced by HTTPsec-Java and openssl differ.
+                </p>
+                <p>
+                    To convert an existing private key created with openssl
+                    ( that wasn't created with the <code>-topk8</code> option ) to HTTPsec-Java ( PKCS#8 ) format do:
+                    <blockquote>
+                        <code>
+                            openssl pkcs8 -nocrypt -topk8 &lt; <i>openssl-key</i>
+                        </code>
+                    </blockquote>
+                </p>
+                <p>
+                    To convert a key created with HTTPsec-Java to the default openssl format ( PKCS#12 ) do:
+                    <blockquote>
+                        <code>
+                            openssl pkcs8 -nocrypt &lt; <i>httpsec-java-key</i>
+                        </code>
+                    </blockquote>
+                </p>
+            </li>
+                    
+        </ol>
+
+        <br><a href="#index">index</a><br>
+        <a name="legal"></a>
+        <h2>Legal Note</h2>
+        <p>This product uses strong cryptography and may be illegal or subject to import / export restrictions in your country or jurisdiction.</p>
+
+        <a href="#index">index</a><br>
+        <a name="links"></a>
+        <h2>Links</h2>
+        <dl>
+            <dt>HTTPsec-Java</dt>
+            <dd><a href="http://secarta.com/products/httpsec-java/">http://secarta.com/products/httpsec-java/</a></dd>
+            
+            <dt>HTTPsec-Java Documentation index</dt>
+            <dd><a href-"http://secarta.com/products/httpsec-java/doc/">http://secarta.com/products/httpsec-java/doc/</a></dd>
+    
+            <dt>HTTPsec-Java FAQ</dt>
+            <dd><a href="http://secarta.com/products/httpsec-java/doc/FAQ.html">http://secarta.com/products/httpsec-java/doc/FAQ.html</a></dd>
+
+            <dt>HTTPsec/1.0 specification</dt>
+            <dd><a href="http://httpsec.org/">http://httpsec.org/</a></dd>
+
+            <dt>Secarta</dt>
+            <dd><a href="http://secarta.com/">http://secarta.com/</a></dd>
+
+            <dt>HTTP/1.1</dt>
+            <dd><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">rfc 2616</a><dd>
+            <dd><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">http://www.w3.org/Protocols/rfc2616/rfc2616.html</a></dd>
+
+            <dt>The Legion of the Bouncy Castle</dt>
+            <dd><a href="http://bouncycastle.org/">http://bouncycastle.org/</a></dd>
+
+            <dt>openssl</dt>
+            <dd><a href="http://www.openssl.org/">http://www.openssl.org</a></dd>
+        </dl>
+        <hr>
+        <p>&copy; Secarta all rights reserved</p>
+    </body>
+</html>

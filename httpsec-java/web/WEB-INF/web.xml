@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+    
+    <!--
+        This filter does httpsec/1.0 authentication.
+        see the javadocs for com.secarta.httpsec.servlet.HttpsecFilter for more info.
+    -->
+    <filter>
+        <filter-name>httpsec</filter-name>
+        <filter-class>com.secarta.httpsec.servlet.HttpsecFilter</filter-class>
+
+        <!--
+            Out of the box the filter only supports a single local identity.
+            This is what appears in the "id" field of challenge and initialize headers.
+        -->
+        <init-param>
+            <param-name>local-id</param-name>
+            <param-value>httpsec_sample_webapp</param-value>
+        </init-param>
+
+        <!--
+            The filename of the private key associated with local-id.
+            For obvious reasons you must make sure this is not accessible from the web.
+        -->
+        <init-param>
+            <param-name>private-key</param-name>
+            <param-value>WEB-INF/httpsec_sample_webapp.key</param-value>
+        </init-param>
+
+        <!--
+            The url of the certificate associated with local-id.
+            This url must be accessible from the web.
+
+            See the httpsec documentation for more about how to communicate your certificate to other users.
+        -->
+        <init-param>
+            <param-name>certificate</param-name>
+            <param-value>http://secarta.com/products/httpsec-java/httpsec_sample_webapp.cert</param-value>
+        </init-param>
+
+        <!--
+            If set to "yes" ( or "true" ) the filter will send a 401 Authorization Required response
+            with an httpsec/1.0 challenge header.
+            to unauthenticated requests. Otherwise it will ignore them.
+        -->
+        <init-param>
+            <param-name>challenge</param-name>
+            <param-value>yes</param-value>
+        </init-param>
+
+        <!--
+            Should the filter expect a valid digest with each authenticated request.
+        -->
+        <init-param>
+            <param-name>request-digest</param-name>
+            <param-value>yes</param-value>
+        </init-param>
+
+        <!--
+            Should the filter add a digest to authenticated responses.
+        -->
+        <init-param>
+            <param-name>response-digest</param-name>
+            <param-value>yes</param-value>
+        </init-param>
+
+        <!--
+            Should the filter cipher responses for clients that have sent
+            Accept-Encoding: x-httpsec/1.0-cipher
+        -->
+        <init-param>
+            <param-name>cipher</param-name>
+            <param-value>yes</param-value>
+        </init-param>
+
+        <!--
+            Delete httpsec sessions ( *NOT* servlet sessions ) that have not been used for
+            this many milliseconds.
+        -->
+        <init-param>
+            <param-name>session-timeout</param-name>
+            <param-value>600000</param-value>
+        </init-param>
+
+        <!--
+            The filter will examine it's table of sessions every so many milliseconds and
+            delete expired sessions.
+        -->
+        <init-param>
+            <param-name>session-cleanup</param-name>
+            <param-value>60000</param-value>
+        </init-param>
+
+        <!--
+            Log filter activity.
+        -->
+        <init-param>
+            <param-name>verbose</param-name>
+            <param-value>yes</param-value>
+        </init-param>
+
+    </filter>
+
+
+    <!--
+        This servlet returns the request it receives as message/http in the manner of
+        the http TRACE method.
+    -->
+    <servlet>
+        <servlet-name>echo</servlet-name>
+        <servlet-class>com.secarta.httpsec.servlet.Echo</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>echo</servlet-name>
+        <url-pattern>/echo</url-pattern>
+    </servlet-mapping>
+
+    <filter-mapping>
+        <filter-name>httpsec</filter-name>
+        <servlet-name>echo</servlet-name>
+    </filter-mapping>
+    
+    
+    <!-- assign a sensible content-type for .cert files -->
+    <mime-mapping>
+        <extension>cert</extension>
+        <mime-type>application/x-x509-user-cert</mime-type>
+    </mime-mapping>
+
+</web-app>

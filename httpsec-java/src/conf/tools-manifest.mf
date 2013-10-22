@@ -1,0 +1,2 @@
+Main-Class: com.secarta.httpsec.tools.Tools
+Class-Path: . bcprov-jdk15-134.jar httpsec.jar bcprov-jdk15-136.jar
