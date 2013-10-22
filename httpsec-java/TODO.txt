@@ -1,7 +1,0 @@
-new version release.
-
-PKI package.
-    
-    CSR servlet - sign with local private key.
-
-    PKI check - for certs signed with local private key.
